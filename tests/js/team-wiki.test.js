@@ -172,6 +172,24 @@ describe("department knowledge repository", () => {
     assert.ok(report.errors.some((error) => error.code === "unknown_context"));
   });
 
+  it("rejects schema-shape mismatches and records stored under the wrong type directory", () => {
+    const repo = makeTempDir("team-wiki-schema-shape-");
+    initKnowledgeRepo(repo, { name: "AI Infra Department" });
+    const malformed = validCase()
+      .replace("owners: [alice]", "owners: alice")
+      .replace("relations:\n  - type: supports\n    target: DEC-2026-0001", "relations: invalid");
+    writeRecord(repo, "records/decisions/CASE-2026-0001.md", malformed);
+    writeRecord(repo, "records/evidence/EVD-2026-0001.md", validEvidence());
+    writeRecord(repo, "records/decisions/DEC-2026-0001.md", validDecision());
+
+    const report = validateKnowledgeRepo(repo);
+
+    assert.equal(report.ok, false);
+    assert.ok(report.errors.some((error) => error.code === "field_type" && error.message.includes("owners")));
+    assert.ok(report.errors.some((error) => error.code === "field_type" && error.message.includes("relations")));
+    assert.ok(report.errors.some((error) => error.code === "record_directory"));
+  });
+
   it("builds deterministic index and graph artifacts from explicit relations", () => {
     const repo = makeTempDir("team-wiki-build-");
     initKnowledgeRepo(repo, { name: "AI Infra Department" });
@@ -322,5 +340,33 @@ describe("department knowledge repository", () => {
 
     assert.equal(result.status, 1);
     assert.match(result.stderr, /draft records cannot be published/);
+  });
+
+  it("publish requires main as its base and a target under records", () => {
+    const repo = makeTempDir("team-wiki-publish-base-");
+    const cli = path.join(__dirname, "../../scripts/team-wiki.js");
+    spawnSync(process.execPath, [cli, "init", repo], { encoding: "utf8" });
+    execFileSync("git", ["init", "-b", "main"], { cwd: repo });
+    execFileSync("git", ["config", "user.email", "test@example.com"], { cwd: repo });
+    execFileSync("git", ["config", "user.name", "Test User"], { cwd: repo });
+    execFileSync("git", ["add", "."], { cwd: repo });
+    execFileSync("git", ["commit", "-m", "init"], { cwd: repo });
+    writeRecord(repo, "records/cases/inference/CASE-2026-0001.md", validCase());
+    writeRecord(repo, "records/evidence/EVD-2026-0001.md", validEvidence());
+    writeRecord(repo, "records/decisions/DEC-2026-0001.md", validDecision());
+    execFileSync("git", ["add", "records"], { cwd: repo });
+    execFileSync("git", ["commit", "-m", "add records"], { cwd: repo });
+    writeRecord(repo, "outside.md", validCase().replace("id: CASE-2026-0001", "id: CASE-2026-0002"));
+
+    const outside = spawnSync(process.execPath, [cli, "publish", repo, "outside.md"], { encoding: "utf8" });
+    assert.equal(outside.status, 1);
+    assert.match(outside.stderr, /target must be a record under records/);
+
+    fs.rmSync(path.join(repo, "outside.md"));
+    execFileSync("git", ["switch", "-c", "work-in-progress"], { cwd: repo });
+    fs.appendFileSync(path.join(repo, "records/cases/inference/CASE-2026-0001.md"), "\nNew reviewed detail.\n");
+    const wrongBase = spawnSync(process.execPath, [cli, "publish", repo, "records/cases/inference/CASE-2026-0001.md"], { encoding: "utf8" });
+    assert.equal(wrongBase.status, 1);
+    assert.match(wrongBase.stderr, /publish must start from main/);
   });
 });

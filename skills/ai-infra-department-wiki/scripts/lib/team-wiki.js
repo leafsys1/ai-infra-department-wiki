@@ -155,8 +155,22 @@ function validateRequired(record, errors) {
   }
   if (record.data.status && !VALID_STATUS.has(record.data.status)) addError(errors, record, "status", `invalid status: ${record.data.status}`);
   if (record.data.visibility && !VALID_VISIBILITY.has(record.data.visibility)) addError(errors, record, "visibility", `invalid visibility: ${record.data.visibility}`);
+  for (const field of ["owners", "reviewers", "evidence", "relations", "supersedes", "superseded_by"]) {
+    if (record.data[field] !== undefined && !Array.isArray(record.data[field])) {
+      addError(errors, record, "field_type", `${field} must be an array`);
+    }
+  }
+  for (const relation of Array.isArray(record.data.relations) ? record.data.relations : []) {
+    if (!relation || typeof relation !== "object" || Array.isArray(relation) || !relation.type || !relation.target) {
+      addError(errors, record, "field_type", "each relation must be an object with type and target");
+    }
+  }
   if (record.data.id && path.basename(record.file, ".md") !== record.data.id) {
     addError(errors, record, "filename", "record filename must equal its id");
+  }
+  const expectedDirectory = RECORD_DIRECTORIES[record.data.type];
+  if (expectedDirectory && !(record.relativePath === `${expectedDirectory}/${record.data.id}.md` || record.relativePath.startsWith(`${expectedDirectory}/`))) {
+    addError(errors, record, "record_directory", `${record.data.type} records must live under ${expectedDirectory}/`);
   }
 }
 
@@ -199,14 +213,14 @@ function validateSensitive(record, errors) {
 
 function collectReferences(record) {
   const references = [];
-  for (const value of record.data.evidence || []) references.push({ field: "evidence", target: value });
-  for (const relation of record.data.relations || []) {
+  for (const value of Array.isArray(record.data.evidence) ? record.data.evidence : []) references.push({ field: "evidence", target: value });
+  for (const relation of Array.isArray(record.data.relations) ? record.data.relations : []) {
     if (!relation || typeof relation !== "object") continue;
     if (!VALID_RELATIONS.has(relation.type)) references.push({ field: "relation_type", target: relation.type, invalid: true });
     if (relation.target) references.push({ field: "relation", target: relation.target });
   }
   for (const field of ["supersedes", "superseded_by"]) {
-    for (const value of record.data[field] || []) references.push({ field, target: value });
+    for (const value of Array.isArray(record.data[field]) ? record.data[field] : []) references.push({ field, target: value });
   }
   return references;
 }
@@ -330,16 +344,16 @@ function buildKnowledgeArtifacts(repoPath) {
   }));
   const edges = [];
   for (const record of records) {
-    for (const evidenceId of record.data.evidence || []) {
+    for (const evidenceId of Array.isArray(record.data.evidence) ? record.data.evidence : []) {
       edges.push({ from: record.data.id, relation_type: "has_evidence", to: evidenceId });
     }
-    for (const relation of record.data.relations || []) {
+    for (const relation of Array.isArray(record.data.relations) ? record.data.relations : []) {
       if (relation && relation.type && relation.target) edges.push({ from: record.data.id, relation_type: relation.type, to: relation.target });
     }
-    for (const target of record.data.supersedes || []) {
+    for (const target of Array.isArray(record.data.supersedes) ? record.data.supersedes : []) {
       edges.push({ from: record.data.id, relation_type: "supersedes", to: target });
     }
-    for (const source of record.data.superseded_by || []) {
+    for (const source of Array.isArray(record.data.superseded_by) ? record.data.superseded_by : []) {
       edges.push({ from: source, relation_type: "supersedes", to: record.data.id });
     }
   }

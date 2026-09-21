@@ -66,8 +66,11 @@ function publish(repoPath, recordPath, push) {
   const absolute = path.resolve(root, recordPath);
   if (!absolute.startsWith(`${root}${path.sep}`) || !fs.existsSync(absolute)) throw new Error("record path must exist inside the knowledge repository");
   const relative = path.relative(root, absolute).split(path.sep).join("/");
+  if (!relative.startsWith("records/")) throw new Error("publish target must be a record under records/");
   const { execFileSync } = require("node:child_process");
   const run = (args) => execFileSync("git", ["-C", root, ...args], { encoding: "utf8" }).trim();
+  const baseBranch = run(["branch", "--show-current"]);
+  if (baseBranch !== "main") throw new Error(`publish must start from main, current branch is ${baseBranch || "detached HEAD"}`);
   const changes = run(["status", "--porcelain"]).split(/\r?\n/).filter(Boolean);
   const unrelated = changes.filter((line) => line.slice(3).replaceAll("\\", "/") !== relative);
   if (unrelated.length > 0) throw new Error(`knowledge repository has unrelated uncommitted changes: ${unrelated.join(", ")}`);
