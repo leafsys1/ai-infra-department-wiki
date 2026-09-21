@@ -1,0 +1,6 @@
+# CODEOWNERS
+
+# The public fork uses its real maintainer. Replace path owners with department
+# teams only after moving the production Skill and knowledge repositories into
+# an organization where those teams exist.
+* @leafsys1

@@ -17,6 +17,7 @@ import {
 } from "./run-quality-and-tests.mjs";
 
 const REQUIRED_STEPS = [
+	"department-skill",
 	"repository-privacy",
 	"build-contracts",
 	"build-graph",

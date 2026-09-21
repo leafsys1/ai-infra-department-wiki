@@ -55,6 +55,23 @@ test("scans protected documentation directories recursively", async (t) => {
 	]);
 });
 
+test("scans department skill directories recursively", async (t) => {
+	const personalHome = ["", "home", "personal-account", "department-wiki"].join("/");
+	const root = await fixture({
+		"skills/ai-infra-department-wiki/references/private.md": personalHome,
+	});
+	t.after(() => rm(root, { recursive: true, force: true }));
+
+	assert.deepEqual(await checkRepositoryPrivacy(root), [
+		{
+			file: "skills/ai-infra-department-wiki/references/private.md",
+			line: 1,
+			rule: "absolute-home-path",
+			message: "replace a personal home path with a stable generic example",
+		},
+	]);
+});
+
 test("allows explicit generic home-path examples used by privacy tests", async (t) => {
 	const root = await fixture({
 		"README.md": [

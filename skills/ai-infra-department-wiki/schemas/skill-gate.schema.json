@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/ai-infra-wiki/skill-gate.schema.json",
+  "title": "Held-out skill gate result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "proposal_id",
+    "accepted",
+    "verdict",
+    "baseline_score",
+    "candidate_score",
+    "tasks"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "proposal_id": { "type": "string", "minLength": 1 },
+    "accepted": { "type": "boolean" },
+    "verdict": {
+      "enum": [
+        "accepted_strict_improvement",
+        "rejected_no_strict_improvement",
+        "rejected_regression"
+      ]
+    },
+    "baseline_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "candidate_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "tasks": { "type": "array", "minItems": 1 }
+  },
+  "additionalProperties": true
+}

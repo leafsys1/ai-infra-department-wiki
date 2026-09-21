@@ -10,7 +10,7 @@ Based on [Andrej Karpathy](https://karpathy.ai/)'s [llm-wiki methodology](https:
 
 Turn scattered information into a growing, interconnected knowledge base
 
-[![version](https://img.shields.io/badge/v3.6.91-Safe%20Graph%20Rename%20%26%20Recovery-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/sdyckjq-lab/llm-wiki-skill/releases)
+[![version](https://img.shields.io/badge/v3.7.0-AI%20Infra%20Department%20Wiki-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/leafsys1/ai-infra-wiki-skill)
 [![license](https://img.shields.io/badge/MIT-license-5a6e5c?style=flat-square&labelColor=3a3026)](LICENSE)
 [![platforms](https://img.shields.io/badge/Claude·Codex·OpenClaw·Hermes-multi--platform-7a96a6?style=flat-square&labelColor=3a3026)]
 
@@ -64,7 +64,20 @@ Then just say:
 > "Help me initialize a knowledge base"
 > "Digest this article: <url>"
 
-The key difference: knowledge is **compiled once, maintained continuously** — not re-derived from scratch every query.
+The core difference: knowledge is **compiled once and maintained continuously**, rather than re-derived from raw documents for every query.
+
+---
+
+## AI Infra Department Knowledge
+
+This fork also ships a self-contained `ai-infra-department-wiki` Skill for reviewed inference, training, communication, deployment, incident, and optimization knowledge. Personal `llm-wiki` remains a local source-compilation workflow; department knowledge uses a separate private Git repository with Case, Evidence, Decision, Pattern, and Runbook records.
+
+```bash
+hermes skills tap add leafsys1/ai-infra-wiki-skill
+hermes skills install leafsys1/ai-infra-wiki-skill/skills/ai-infra-department-wiki
+```
+
+The department workflow adopts selected Google Research WikiSkill mechanisms: successful/failed experience comparison, Pattern-to-Skill separation, identical held-out task sets, strict-improvement gating, paired outcomes, and persistent rejected-proposal history. It deliberately does not auto-edit official Skills, auto-publish, auto-merge, or run destructive Git rollback in a shared knowledge repository. See [`references/wikiskill-comparison.md`](references/wikiskill-comparison.md).
 
 ---
 

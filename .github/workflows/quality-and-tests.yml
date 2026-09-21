@@ -20,6 +20,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run quality-and-tests
+      - name: Install Chromium for Skill regression
+        run: npx playwright install chromium
+      - name: Run full Skill regression
+        run: bash tests/regression.sh
       - name: Upload cleaned failure log
         if: failure()
         uses: actions/upload-artifact@v4

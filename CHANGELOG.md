@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.7.0 (2026-09-21)
+
+### New
+
+- Added a self-contained `ai-infra-department-wiki` Skill for reviewed, evidence-backed AI Infra knowledge collaboration through a separate private repository.
+- Added Case, Evidence, Decision, Pattern, Runbook, and Environment templates plus machine-readable record, relation, and Skill-gate schemas.
+- Added `team-wiki` workflows for initialization, clean fast-forward pull, local capture, validation, deterministic build, health checks, contribution-branch publishing, and held-out Skill gating.
+- Added deterministic index/graph generation, lifecycle and reference validation, sensitive-content blockers, Git contribution guards, and persistent Skill-impact reports.
+- Integrated selected Google Research WikiSkill concepts: success/failure comparison, Pattern-to-Skill separation, identical held-out task sets, strict-improvement acceptance, paired outcomes, rejected-proposal retention, and exact-binomial diagnostics.
+
+### Governance
+
+- Added contributor, security, CODEOWNERS, PR review, provider-boundary, redaction, and evidence policies.
+- Department knowledge is explicitly excluded from this public fork and must live in a separate private repository.
+- The local Workbench remains a single-user client and is not promoted as a department service.
+
 ## v3.6.91 (2026-07-26)
 
 ### 修复
