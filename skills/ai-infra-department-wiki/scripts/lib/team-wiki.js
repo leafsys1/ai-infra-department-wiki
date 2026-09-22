@@ -5,6 +5,19 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
 
+const {
+  buildCatalog,
+  overview: buildOverview,
+  renderIndexMarkdown,
+  renderOverviewMarkdown,
+} = require("./query");
+const { POLICY_FILE, loadPolicy, scanSource } = require("./policy");
+const { SchemaSet } = require("./schema");
+const { initKnowledgeRepo: scaffoldKnowledgeRepo, skillVersion } = require("./scaffold");
+
+const RECORD_SCHEMA = "record.schema.json";
+const SCHEMA_DIRECTORY = path.resolve(__dirname, "..", "..", "schemas");
+
 const RECORD_DIRECTORIES = Object.freeze({
   case: "records/cases",
   evidence: "records/evidence",
@@ -38,14 +51,20 @@ const VALID_RELATIONS = new Set([
   "contradicts",
 ]);
 
-const SENSITIVE_PATTERNS = [
-  { name: "private_key", expression: /-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----/ },
-  { name: "github_token", expression: /\b(?:ghp_|github_pat_)[A-Za-z0-9_-]{12,}\b/ },
-  { name: "api_key", expression: /\bsk-[A-Za-z0-9_-]{12,}\b/ },
-  { name: "credential_assignment", expression: /\b(?:api[_-]?key|password|passwd|secret|token)\s*[:=]\s*["']?[A-Za-z0-9_./+=-]{12,}/i },
-  { name: "personal_home", expression: /(?:^|[\s`"'])\/(?:home|Users)\/(?!user\b|example\b|demo\b)[^/\s`"']+\// },
-  { name: "private_ipv4", expression: /\b(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})(?::\d{1,5})?\b/ },
-];
+/**
+ * Fields the hand-written checks below already report with a stable code and message. The schema
+ * validator suppresses exactly these so a single mistake is reported once, while everything the
+ * hand-written checks do not cover (item patterns, item counts, additionalProperties, and any
+ * required field later added to the schema) still comes from the schema.
+ */
+const HAND_VALIDATED_FIELDS = new Set([
+  "schema_version", "id", "type", "title", "status", "visibility", "owners", "created", "updated",
+]);
+
+function suppressedSchemaError(fileName, error) {
+  if (fileName !== RECORD_SCHEMA) return false;
+  return HAND_VALIDATED_FIELDS.has(error.path.split("/")[1]);
+}
 
 function scalar(value) {
   const trimmed = value.trim();
@@ -127,11 +146,12 @@ function recordFiles(repoPath) {
 }
 
 function loadRecords(repoPath) {
-  return recordFiles(repoPath).map((file) => {
+  const root = path.resolve(repoPath);
+  return recordFiles(root).map((file) => {
     const source = fs.readFileSync(file, "utf8");
     return {
       file,
-      relativePath: path.relative(repoPath, file).split(path.sep).join("/"),
+      relativePath: path.relative(root, file).split(path.sep).join("/"),
       source,
       data: parseFrontmatter(source),
     };
@@ -140,6 +160,10 @@ function loadRecords(repoPath) {
 
 function addError(errors, record, code, message) {
   errors.push({ code, file: record ? record.relativePath : null, message });
+}
+
+function addWarning(warnings, record, code, message) {
+  warnings.push({ code, file: record ? record.relativePath : null, message });
 }
 
 function validateRequired(record, errors) {
@@ -169,7 +193,7 @@ function validateRequired(record, errors) {
     addError(errors, record, "filename", "record filename must equal its id");
   }
   const expectedDirectory = RECORD_DIRECTORIES[record.data.type];
-  if (expectedDirectory && !(record.relativePath === `${expectedDirectory}/${record.data.id}.md` || record.relativePath.startsWith(`${expectedDirectory}/`))) {
+  if (expectedDirectory && !record.relativePath.startsWith(`${expectedDirectory}/`)) {
     addError(errors, record, "record_directory", `${record.data.type} records must live under ${expectedDirectory}/`);
   }
 }
@@ -192,6 +216,9 @@ function validateCase(record, errors) {
       addError(errors, record, "validation", "verified case requires at least 2 repetitions");
     }
     if (!validation.conclusion_level) addError(errors, record, "validation", "verified case requires conclusion_level");
+    if (String(data.visibility) === "local-only") {
+      addError(errors, record, "visibility", "a local-only record cannot claim a verified department conclusion");
+    }
   }
 }
 
@@ -205,9 +232,11 @@ function validateEvidence(record, errors) {
   }
 }
 
-function validateSensitive(record, errors) {
-  for (const { name, expression } of SENSITIVE_PATTERNS) {
-    if (expression.test(record.source)) addError(errors, record, "sensitive_content", `blocked sensitive content: ${name}`);
+function validateSensitive(record, policy, errors, warnings) {
+  for (const finding of scanSource(record.source, policy)) {
+    const message = `${finding.severity === "block" ? "blocked" : "flagged"} sensitive content: ${finding.rule} (${finding.source})`;
+    if (finding.severity === "block") addError(errors, record, "sensitive_content", message);
+    else addWarning(warnings, record, "sensitive_content", message);
   }
 }
 
@@ -225,24 +254,61 @@ function collectReferences(record) {
   return references;
 }
 
-function validateKnowledgeRepo(repoPath) {
+function createSchemaSet() {
+  try {
+    if (!fs.existsSync(path.join(SCHEMA_DIRECTORY, RECORD_SCHEMA))) {
+      return { error: `schema files are missing at ${SCHEMA_DIRECTORY}; reinstall the Skill (the schemas directory must sit next to scripts/)` };
+    }
+    return { schemas: new SchemaSet(SCHEMA_DIRECTORY) };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+/**
+ * Validate a knowledge repository.
+ *
+ * errors block a pull request; warnings are recorded and only block when `strict` is set (publish
+ * and CI use strict so an intentional exception has to become an explicit policy `allow` entry).
+ */
+function validateKnowledgeRepo(repoPath, options = {}) {
   const root = path.resolve(repoPath);
+  const strict = options.strict === true;
   const config = path.join(root, ".department-wiki.json");
   const errors = [];
+  const warnings = [];
   if (!fs.existsSync(config)) addError(errors, null, "configuration", "missing .department-wiki.json; run team-wiki init first");
+
+  let policy;
+  try {
+    policy = loadPolicy(root);
+  } catch (error) {
+    addError(errors, null, "policy", error.message);
+    policy = { file: POLICY_FILE, present: false, block: [], warn: [], allow: [], rules: [] };
+  }
+
+  const { schemas, error: schemaError } = createSchemaSet();
+  if (schemaError) addError(errors, null, "schema", schemaError);
 
   let records = [];
   try {
     records = loadRecords(root);
   } catch (error) {
     addError(errors, null, "frontmatter", error.message);
-    return { ok: false, records: 0, errors, warnings: [] };
+    return { ok: false, strict, records: 0, errors, warnings, policy_file: policy.file, schema_errors: 0 };
   }
 
   const byId = new Map();
   for (const record of records) {
     validateRequired(record, errors);
-    validateSensitive(record, errors);
+    validateSensitive(record, policy, errors, warnings);
+    if (schemas) {
+      const result = schemas.validate(record.data, RECORD_SCHEMA);
+      for (const item of result.errors) {
+        if (suppressedSchemaError(RECORD_SCHEMA, item)) continue;
+        addError(errors, record, "schema", `${RECORD_SCHEMA}: ${item.keyword} ${item.message}`);
+      }
+    }
     if (record.data.type === "case") validateCase(record, errors);
     if (record.data.type === "evidence") validateEvidence(record, errors);
     if (record.data.id) {
@@ -258,104 +324,55 @@ function validateKnowledgeRepo(repoPath) {
     }
   }
 
-  return { ok: errors.length === 0, records: records.length, errors, warnings: [] };
-}
-
-function ensureEmptyOrInitialized(repoPath) {
-  if (!fs.existsSync(repoPath)) return;
-  const entries = fs.readdirSync(repoPath).filter((entry) => entry !== ".git");
-  if (entries.length > 0 && !fs.existsSync(path.join(repoPath, ".department-wiki.json"))) {
-    throw new Error(`target directory is not empty: ${repoPath}`);
-  }
+  const blocking = errors.length;
+  return {
+    ok: blocking === 0 && (!strict || warnings.length === 0),
+    strict,
+    records: records.length,
+    errors,
+    warnings,
+    policy_file: policy.file,
+    policy_rules: policy.rules.length,
+    schema_errors: errors.filter((error) => error.code === "schema").length,
+  };
 }
 
 function initKnowledgeRepo(repoPath, options = {}) {
-  const root = path.resolve(repoPath);
-  ensureEmptyOrInitialized(root);
-  fs.mkdirSync(root, { recursive: true });
-  const directories = [
-    "records/cases/inference",
-    "records/cases/training",
-    "records/cases/communication",
-    "records/cases/deployment",
-    "records/cases/incidents",
-    "records/evidence",
-    "records/decisions",
-    "records/patterns",
-    "records/runbooks",
-    "records/environments",
-    "skill-impact",
-    "generated",
-  ];
-  for (const directory of directories) {
-    fs.mkdirSync(path.join(root, directory), { recursive: true });
-    fs.writeFileSync(path.join(root, directory, ".gitkeep"), "", "utf8");
-  }
-  const configuration = {
-    schema_version: 1,
-    name: options.name || "AI Infra Department Knowledge",
-    default_visibility: "internal",
-    generated_directory: "generated",
-  };
-  fs.writeFileSync(path.join(root, ".department-wiki.json"), `${JSON.stringify(configuration, null, 2)}\n`, "utf8");
-  fs.writeFileSync(
-    path.join(root, ".gitignore"),
-    [".wiki-cache.json", ".wiki-tmp/", "drafts/", "raw-local/", "cache/", "generated/*", "!generated/.gitkeep", "*.pem", "*.key", ""].join("\n"),
-    "utf8",
-  );
-  fs.writeFileSync(
-    path.join(root, "README.md"),
-    `# ${configuration.name}\n\nThis private repository stores reviewed, desensitized AI Infra knowledge records.\n`,
-    "utf8",
-  );
-  return { created: true, path: root };
+  const report = scaffoldKnowledgeRepo(repoPath, options);
+  return { created: !report.already_initialized, ...report };
 }
 
-function buildKnowledgeArtifacts(repoPath) {
+function buildKnowledgeArtifacts(repoPath, options = {}) {
   const root = path.resolve(repoPath);
-  const report = validateKnowledgeRepo(root);
+  const report = validateKnowledgeRepo(root, { strict: options.strict === true });
   if (!report.ok) throw new Error(`knowledge validation failed with ${report.errors.length} error(s)`);
   const records = loadRecords(root).sort((left, right) => String(left.data.id).localeCompare(String(right.data.id)));
   const generated = path.join(root, "generated");
   fs.mkdirSync(generated, { recursive: true });
 
-  const grouped = new Map();
-  for (const record of records) {
-    if (!grouped.has(record.data.type)) grouped.set(record.data.type, []);
-    grouped.get(record.data.type).push(record);
-  }
-  const lines = ["# Department Knowledge Index", "", "Generated from reviewed records. Do not edit manually.", ""];
-  for (const type of [...grouped.keys()].sort()) {
-    lines.push(`## ${type}`, "");
-    for (const record of grouped.get(type)) {
-      lines.push(`- [${record.data.id}: ${record.data.title}](../${record.relativePath}) - ${record.data.status}`);
-    }
-    lines.push("");
-  }
-  fs.writeFileSync(path.join(generated, "index.md"), `${lines.join("\n").trimEnd()}\n`, "utf8");
+  const catalog = buildCatalog(records);
+  fs.writeFileSync(path.join(generated, "index.md"), renderIndexMarkdown(catalog), "utf8");
+  fs.writeFileSync(path.join(generated, "catalog.json"), `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
 
-  const nodes = records.map((record) => ({
-    id: record.data.id,
-    label: record.data.title,
-    path: record.relativePath,
-    status: record.data.status,
-    type: record.data.type,
-    visibility: record.data.visibility,
+  const overviewReport = buildOverview(catalog);
+  fs.writeFileSync(path.join(generated, "overview.md"), renderOverviewMarkdown(overviewReport), "utf8");
+
+  const nodes = catalog.records.map((entry) => ({
+    id: entry.id,
+    label: entry.title,
+    path: entry.path,
+    status: entry.status,
+    type: entry.type,
+    visibility: entry.visibility,
+    areas: entry.areas,
+    owners: entry.owners,
   }));
   const edges = [];
-  for (const record of records) {
-    for (const evidenceId of Array.isArray(record.data.evidence) ? record.data.evidence : []) {
-      edges.push({ from: record.data.id, relation_type: "has_evidence", to: evidenceId });
-    }
-    for (const relation of Array.isArray(record.data.relations) ? record.data.relations : []) {
-      if (relation && relation.type && relation.target) edges.push({ from: record.data.id, relation_type: relation.type, to: relation.target });
-    }
-    for (const target of Array.isArray(record.data.supersedes) ? record.data.supersedes : []) {
-      edges.push({ from: record.data.id, relation_type: "supersedes", to: target });
-    }
-    for (const source of Array.isArray(record.data.superseded_by) ? record.data.superseded_by : []) {
-      edges.push({ from: source, relation_type: "supersedes", to: record.data.id });
-    }
+  for (const entry of catalog.records) {
+    for (const evidenceId of entry.evidence) edges.push({ from: entry.id, relation_type: "has_evidence", to: evidenceId });
+    for (const relation of entry.relations) edges.push({ from: entry.id, relation_type: relation.type, to: relation.target });
+    for (const target of entry.supersedes) edges.push({ from: entry.id, relation_type: "supersedes", to: target });
+    for (const source of entry.superseded_by) edges.push({ from: source, relation_type: "supersedes", to: entry.id });
   }
   edges.sort((left, right) => `${left.from}\0${left.relation_type}\0${left.to}`.localeCompare(`${right.from}\0${right.relation_type}\0${right.to}`));
   const graph = { schema_version: 1, nodes, edges };
@@ -367,10 +384,21 @@ function buildKnowledgeArtifacts(repoPath) {
     records: records.length,
     errors: report.errors.length,
     warnings: report.warnings.length,
+    tool_version: skillVersion(),
+    policy_file: report.policy_file,
+    policy_rules: report.policy_rules ?? null,
     sha256: crypto.createHash("sha256").update(JSON.stringify(graph)).digest("hex"),
   };
   fs.writeFileSync(path.join(generated, "health-report.json"), `${JSON.stringify(health, null, 2)}\n`, "utf8");
-  return { nodes: nodes.length, edges: edges.length };
+
+  return {
+    nodes: nodes.length,
+    edges: edges.length,
+    records: records.length,
+    warnings: report.warnings.length,
+    catalog,
+    overview: overviewReport,
+  };
 }
 
 function git(repoPath, args) {
@@ -381,14 +409,23 @@ function pullKnowledgeRepo(repoPath) {
   const root = path.resolve(repoPath);
   if (!fs.existsSync(path.join(root, ".git"))) throw new Error("knowledge path is not a git repository");
   if (git(root, ["status", "--porcelain"])) throw new Error("knowledge repository has uncommitted changes; commit or discard them before pull");
+  const before = git(root, ["rev-parse", "HEAD"]);
   git(root, ["fetch", "--prune", "origin"]);
   git(root, ["merge", "--ff-only", "@{u}"]);
+  const after = git(root, ["rev-parse", "HEAD"]);
   const artifacts = buildKnowledgeArtifacts(root);
-  return { updated: true, ...artifacts };
+  return { updated: before !== after, previous_head: before, head: after, ...artifacts };
 }
 
 module.exports = {
+  ID_PATTERNS,
+  POLICY_FILE,
   RECORD_DIRECTORIES,
+  RECORD_SCHEMA,
+  SCHEMA_DIRECTORY,
+  VALID_RELATIONS,
+  VALID_STATUS,
+  VALID_VISIBILITY,
   buildKnowledgeArtifacts,
   initKnowledgeRepo,
   loadRecords,

@@ -79,29 +79,28 @@ bash install.sh --platform hermes
 
 部门模式采用双仓：本仓只分发 Skill、模板、Schema 和校验工具；真实部门知识必须放在另一个**私有仓库**。不要把客户资料、日志、地址、凭据或内部性能数据提交到当前公开 fork。
 
-Hermes 可以直接从本仓安装独立 Skill：
+一个新人加入的完整闭环：
 
 ```bash
-hermes skills tap add leafsys1/ai-infra-wiki-skill
+# 1) 安装 Skill（二选一）
+hermes skills tap add leafsys1/ai-infra-wiki-skill        # Skill 位于默认分支后可用
 hermes skills install leafsys1/ai-infra-wiki-skill/skills/ai-infra-department-wiki
+bash install.sh --platform hermes                          # 或统一安装器，同时装个人 + 部门两个 Skill
+
+# 2) 克隆部门知识仓，先看别人已经沉淀了什么
+node .department-tools/scripts/team-wiki.js sync .          # 拉取 + 报告本次新增/变更的记录 + 全仓统计
+node .department-tools/scripts/team-wiki.js query . 训练 吞吐 --accelerator 910b2c
+node .department-tools/scripts/team-wiki.js related . CASE-2026-0001
+
+# 3) 自己沉淀：从模板起草 → 校验 → 发布为贡献分支 → 开 PR
+node .department-tools/scripts/team-wiki.js capture . case CASE-2026-0007
+node .department-tools/scripts/team-wiki.js validate . --strict
+node .department-tools/scripts/team-wiki.js publish . records/cases/inference/CASE-2026-0007.md --push
 ```
 
-也可以继续使用统一安装器，它会同时安装个人和部门两个 Skill：
+`init` 会把校验器、Schema、模板**固定版本内置**到知识仓的 `.department-tools/` 并生成 CI、PR 模板与 CODEOWNERS，因此：CI 无需安装 Skill 即可校验 PR；所有同事用同一份规则；工具升级是一次可评审的 diff（`upgrade-tools`）。
 
-```bash
-bash install.sh --platform hermes
-```
-
-部门知识仓的核心命令：
-
-```bash
-node scripts/team-wiki.js init <私有知识仓> --name "AI Infra Department"
-node scripts/team-wiki.js pull <私有知识仓>
-node scripts/team-wiki.js capture <私有知识仓> case CASE-2026-0001
-node scripts/team-wiki.js validate <私有知识仓>
-node scripts/team-wiki.js build <私有知识仓>
-node scripts/team-wiki.js publish <私有知识仓> <记录路径> --push
-```
+检索是部门模式的核心能力：`query` 按字段加权打分（id/标题/标签/模型/加速器/框架…）并给出命中原因，支持 `--type/--status/--area/--owner/--tag/--model/--framework/--accelerator/--since` 过滤器与 `--any`；中文按二元组切分，无需分词器。`build` 会生成 `generated/index.md`、`catalog.json`、`overview.md`、`graph-data.json` 四份**确定性**产物（同输入字节一致、被 gitignore、不作为事实源）。
 
 部门记录强制保留模型、硬件、框架版本、并行拓扑、测试口径、证据定位、验证等级、适用边界和替代关系。自动生成的索引与图谱不作为事实源。
 
@@ -117,6 +116,8 @@ node scripts/team-wiki.js publish <私有知识仓> <记录路径> --push
 - 只有候选得分严格提升才通过机械 gate；
 - 永久保留拒绝提案 ID、逐任务配对结果和影响账本，避免重复失败；
 - 提供无第三方依赖的配对精确二项统计诊断。
+
+在此之上补了一条论文规则会漏掉的判据：**分辨力下限**。`R_val > R_best` 在小留出集上会因单个任务翻转就接受候选，同时配对检验报出 `p = 1`——算术没错，结论不成立。所以 `gate` 会额外报告：观察到多少不一致任务对、在当前 alpha 下显著需要多少对、以及这组任务**最小能分辨多小的提升**（MDE）。达不到下限时结论是 `rejected_not_enough_resolution`（“分辨不出来”），而不是“没有收益”；关键任务回退一票否决，优先于均值。
 
 部门模式不会自动修改正式 Skill、自动发布、自动合并，也不会在共享知识仓执行 `git reset --hard`。机械 gate 通过后仍需人工检查安全、精度、回归、适用范围与许可证。详细对照见 [`references/wikiskill-comparison.md`](references/wikiskill-comparison.md)。
 

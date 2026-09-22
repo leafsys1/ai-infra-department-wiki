@@ -73,11 +73,31 @@ The core difference: knowledge is **compiled once and maintained continuously**,
 This fork also ships a self-contained `ai-infra-department-wiki` Skill for reviewed inference, training, communication, deployment, incident, and optimization knowledge. Personal `llm-wiki` remains a local source-compilation workflow; department knowledge uses a separate private Git repository with Case, Evidence, Decision, Pattern, and Runbook records.
 
 ```bash
-hermes skills tap add leafsys1/ai-infra-wiki-skill
+# 1) Install the Skill (either path)
+hermes skills tap add leafsys1/ai-infra-wiki-skill        # available once the Skill is on the default branch
 hermes skills install leafsys1/ai-infra-wiki-skill/skills/ai-infra-department-wiki
+bash install.sh --platform hermes                          # or the unified installer (personal + department)
+
+# 2) See what the department already knows before adding to it
+node .department-tools/scripts/team-wiki.js sync .          # fast-forward, report what changed, print corpus stats
+node .department-tools/scripts/team-wiki.js query . prefill kv-cache --accelerator 910b2c
+node .department-tools/scripts/team-wiki.js related . CASE-2026-0001
+
+# 3) Contribute: draft from the template, validate, publish a contribution branch, open a PR
+node .department-tools/scripts/team-wiki.js capture . case CASE-2026-0007
+node .department-tools/scripts/team-wiki.js validate . --strict
+node .department-tools/scripts/team-wiki.js publish . records/cases/inference/CASE-2026-0007.md --push
 ```
 
-The department workflow adopts selected Google Research WikiSkill mechanisms: successful/failed experience comparison, Pattern-to-Skill separation, identical held-out task sets, strict-improvement gating, paired outcomes, and persistent rejected-proposal history. It deliberately does not auto-edit official Skills, auto-publish, auto-merge, or run destructive Git rollback in a shared knowledge repository. See [`references/wikiskill-comparison.md`](references/wikiskill-comparison.md).
+`init` vendors the validator, schemas and templates into the knowledge repository's `.department-tools/` at a pinned version and generates CI, a pull-request template and CODEOWNERS. CI therefore validates a pull request without installing the Skill, every colleague validates with the same rules, and a toolchain upgrade is a reviewable diff (`upgrade-tools`).
+
+Retrieval is the point of the department mode: `query` scores records field-by-field (id, title, tags, model, accelerator, framework) and reports why each hit matched, with `--type/--status/--area/--owner/--tag/--model/--framework/--accelerator/--since` filters and `--any`. Chinese queries work through CJK bigrams — no segmenter required. `build` regenerates four **deterministic** artifacts (`index.md`, `catalog.json`, `overview.md`, `graph-data.json`): identical input yields identical bytes, they are gitignored, and they are never an authority for a claim.
+
+`publish` takes a **record set** — the records you name plus the records they newly reference — revalidates the committed tree in a temporary worktree, and rolls the branch back rather than leave one that would not validate on its own.
+
+The department workflow adopts selected Google Research WikiSkill mechanisms: successful/failed experience comparison, Pattern-to-Skill separation, identical held-out task sets, strict-improvement gating, paired outcomes, and persistent rejected-proposal history. On top of the paper's rule it adds a **resolution floor**: `R_val > R_best` accepts a candidate on a single flipped task while the paired test reports `p = 1` — the arithmetic is fine, the conclusion is not. `gate` therefore reports the observed discordant pairs, how many significance would require, and the smallest delta the task set could ever have resolved (its MDE), and returns `rejected_not_enough_resolution` rather than "no benefit" below that floor. A regression on a critical task rejects the candidate before any average is considered.
+
+It deliberately does not auto-edit official Skills, auto-publish, auto-merge, or run destructive Git rollback in a shared knowledge repository. See [`references/wikiskill-comparison.md`](references/wikiskill-comparison.md).
 
 ---
 
