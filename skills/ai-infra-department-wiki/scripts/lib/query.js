@@ -159,6 +159,8 @@ function catalogEntry(record) {
     superseded_by: asArray(data.superseded_by).sort(),
     created: String(data.created || ""),
     updated: String(data.updated || ""),
+    summary: String(data.summary || data.abstract || ""),
+    sources: asArray(data.sources || data.source_urls || data.source).sort(),
     context: {
       workload: fields.workload || null,
       model_family: fields.model_family || null,
