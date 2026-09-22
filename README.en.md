@@ -19,6 +19,7 @@ Useful AI Infra knowledge is scattered across test logs, model packages, deliver
 - **Incident review**: symptom, minimal reproduction, root cause, fix, regression test, and remaining risk
 - **Knowledge records**: Case, Evidence, Decision, Pattern, Runbook, and Environment
 - **Human + agent access**: agents use the CLI and structured `catalog.json`; people use the Chinese dashboard for directory, content, citations, and sources
+- **QA sibling Skill**: `inference-delivery-qa` audits inference deployments, operator tuning, benchmark data, and customer delivery packages with evidence gates
 
 ## Install
 
@@ -81,6 +82,17 @@ node .department-tools/scripts/team-wiki.js query . 910B2C throughput --status v
 node .department-tools/scripts/team-wiki.js show . CASE-2026-0001
 node .department-tools/scripts/team-wiki.js related . CASE-2026-0001
 ```
+
+## AI Infra QA and delivery
+
+For model adaptation, operator tuning, NPU reproduction, serving performance, and customer delivery reviews, use the sibling `inference-delivery-qa` Skill in this repository. It provides nine G0-G8 gates, an evidence allowlist, CSV/timing/TPOT consistency checks, a five-dimensional authenticity boundary, frozen-package hashes, and a conservative release state machine.
+
+```bash
+python3 skills/inference-delivery-qa/scripts/qa.py init --out <run>/input
+python3 skills/inference-delivery-qa/scripts/qa.py audit --root <run>/evidence --input <run>/input/audit-input.json --out <run>/mechanical
+```
+
+Ingest QA results through `skills/ai-infra-department-wiki/references/inference-delivery-qa-bridge.md`: the QA package becomes an Evidence set, while the Case stores conclusions and applicability. `HOLD`, `BLOCKED`, and `PENDING_INDEPENDENT_REVIEW` must not become `verified`; customer release requires an independent authorized reviewer to approve the exact frozen package digest.
 
 ## Chinese knowledge dashboard
 

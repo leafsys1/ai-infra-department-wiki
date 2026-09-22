@@ -18,7 +18,7 @@ AI Infra 团队的有效经验通常分散在测试日志、模型包、交付�
 - **调优经验**：基线、改动、配对结果、性能收益、分辨力和回滚条件
 - **问题复盘**：症状、最小复现、根因、修复、回归验证和剩余风险
 - **知识入库**：Case、Evidence、Decision、Pattern、Runbook、Environment
-- **人机共用**：AI Agent 通过 CLI 和结构化 `catalog.json` 检索；人通过中文看板阅读目录、正文、引用和来源
+- `inference-delivery-qa`：针对推理部署、算子调优、benchmark 数据和客户交付包的证据质检 Skill
 
 ## 安装
 
@@ -82,7 +82,17 @@ node .department-tools/scripts/team-wiki.js show . CASE-2026-0001
 node .department-tools/scripts/team-wiki.js related . CASE-2026-0001
 ```
 
-## 中文知识看板
+## AI Infra 质检与交付
+
+对模型适配、算子调优、NPU 复现、服务化性能和客户交付做质检时，使用同仓的 `inference-delivery-qa` Skill。它提供 G0-G8 九道门禁、证据白名单、CSV/时序/TPOT 自洽检查、来源真实性五维边界、冻结包哈希和保守状态机。
+
+```bash
+python3 skills/inference-delivery-qa/scripts/qa.py init --out <run>/input
+python3 skills/inference-delivery-qa/scripts/qa.py audit --root <run>/evidence --input <run>/input/audit-input.json --out <run>/mechanical
+```
+
+质检结果按 `references/inference-delivery-qa-bridge.md` 入库：质检包是 Evidence 集合，Case 保存结论和适用边界；`HOLD`、`BLOCKED`、`PENDING_INDEPENDENT_REVIEW` 不得写成 `verified`，客户放行必须由独立授权人员批准确切冻结包。
+
 
 打开 [中文知识看板](docs/department-dashboard/index.html)。它是单文件、无构建、无服务器的 GitHub 风格阅读界面：
 

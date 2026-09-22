@@ -35,10 +35,14 @@ Before any department operation:
 4. To find knowledge, read `references/retrieval-and-sync.md`.
 5. For the shared repository model and onboarding, read `references/knowledge-repo-governance.md`.
 6. For Pattern-to-Skill work, read `references/wikiskill-comparison.md`.
+7. For inference validation, customer delivery, and QA-package ingestion, read `references/inference-delivery-qa-bridge.md` and load the sibling `inference-delivery-qa` Skill.
 
 Resolve paths relative to this `SKILL.md` directory. The support files are installed beside the Skill.
 
-## Commands
+## Supported sibling Skill
+
+The distribution package also includes `inference-delivery-qa`, a standalone Python Agent Skill adopted from the delivery QA project. Install or load the complete `skills/inference-delivery-qa/` directory when an agent needs to inspect an inference deployment, optimization result, benchmark dataset, or customer delivery package. Its original upstream tests are mirrored under `tests/inference-delivery-qa/`; the adoption record is `docs/inference-delivery-qa-adoption.md`.
+
 
 ```bash
 node scripts/team-wiki.js init <repo> [--name "AI Infra Department"] [--no-scaffold]
@@ -207,6 +211,7 @@ references/retrieval-and-sync.md
 references/review-policy.md
 references/security-and-redaction.md
 references/wikiskill-comparison.md
+references/inference-delivery-qa-bridge.md
 ```
 
 If a command fails with `Cannot find module './lib/…'` or `department template missing`, the

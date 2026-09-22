@@ -1,0 +1,25 @@
+name: inference-delivery-qa
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  qa-skill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run adopted QA Skill tests
+        run: python -m unittest discover -s tests/inference-delivery-qa -v
+      - name: Smoke the mechanical audit CLI
+        run: |
+          python skills/inference-delivery-qa/scripts/qa.py init --out "$RUNNER_TEMP/qa-input"
+          test -f "$RUNNER_TEMP/qa-input/audit-input.json"
