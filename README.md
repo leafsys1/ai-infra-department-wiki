@@ -10,7 +10,7 @@
 
 把碎片化的信息变成持续积累、互相链接的知识库
 
-[![version](https://img.shields.io/badge/v3.7.0-AI%20Infra%20部门知识协作-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/leafsys1/ai-infra-wiki-skill)
+[![version](https://img.shields.io/badge/v3.7.0-AI%20Infra%20部门知识协作-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/leafsys1/ai-infra-department-wiki)
 [![license](https://img.shields.io/badge/MIT-license-5a6e5c?style=flat-square&labelColor=3a3026)](LICENSE)
 [![platforms](https://img.shields.io/badge/Claude·Codex·OpenClaw·Hermes-多平台-7a96a6?style=flat-square&labelColor=3a3026)]
 
@@ -70,21 +70,21 @@ bash install.sh --platform hermes
 
 ## AI Infra 部门知识协作
 
-本 fork 新增 `ai-infra-department-wiki` Skill，用于多人沉淀和共享模型推理、训练、通信、部署、故障与项目调优经验。它与个人 `llm-wiki` 是两种明确分开的模式：
+本仓在 `llm-wiki` 基础上新增 `ai-infra-department-wiki` Skill，用于多人沉淀和共享模型推理、训练、通信、部署、故障与项目调优经验。它与个人 `llm-wiki` 是两种明确分开的模式：
 
 | 模式 | 输入 | 主要产物 | 协作边界 |
 |---|---|---|---|
 | 个人 `llm-wiki` | 网页、PDF、笔记、对话 | 实体、主题、摘要、综合分析 | 本地个人知识库 |
 | 部门 `ai-infra-department-wiki` | 实验、项目、故障、评测和证据 | Case、Evidence、Decision、Pattern、Runbook | 私有 Git 仓 + 分支评审 |
 
-部门模式采用双仓：本仓只分发 Skill、模板、Schema 和校验工具；真实部门知识必须放在另一个**私有仓库**。不要把客户资料、日志、地址、凭据或内部性能数据提交到当前公开 fork。
+部门模式采用双仓：本仓只分发 Skill、模板、Schema 和校验工具；真实部门知识必须放在另一个**私有仓库**。不要把客户资料、日志、地址、凭据或内部性能数据提交到本仓 —— 本仓是工具分发面，不承载知识。
 
 一个新人加入的完整闭环：
 
 ```bash
 # 1) 安装 Skill（二选一）
-hermes skills tap add leafsys1/ai-infra-wiki-skill        # Skill 位于默认分支后可用
-hermes skills install leafsys1/ai-infra-wiki-skill/skills/ai-infra-department-wiki
+hermes skills tap add leafsys1/ai-infra-department-wiki        # Skill 位于默认分支后可用
+hermes skills install leafsys1/ai-infra-department-wiki/skills/ai-infra-department-wiki
 bash install.sh --platform hermes                          # 或统一安装器，同时装个人 + 部门两个 Skill
 
 # 2) 克隆部门知识仓，先看别人已经沉淀了什么
