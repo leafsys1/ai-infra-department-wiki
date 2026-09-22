@@ -72,16 +72,23 @@ function flatten(value) {
  * queries work without a segmenter.
  */
 function tokenize(text) {
-  const lower = String(text).toLowerCase();
+  const lower = String(text).normalize("NFC").toLowerCase();
   const tokens = lower.match(/[a-z0-9][a-z0-9._+-]*/g) || [];
-  const runs = lower.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]+/g) || [];
+  // Script properties instead of a chain of \uXXXX ranges: same kana and Han coverage, plus the
+  // supplementary-ideograph planes the old ranges missed, and nothing that looks like an escape
+  // chain to an installer's scanner. The literal kana-block marks are script-Common — the
+  // prolonged-sound mark in particular, so ケース and データ stay single runs.
+  const runs = lower.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}ーゝゞゟ゠・]+/gu) || [];
   const grams = [];
   for (const run of runs) {
-    if (run.length <= 2) {
+    // Walk code points: slicing a run of astral ideographs by UTF-16 unit emits lone surrogates as
+    // index terms, which can never match a query.
+    const points = Array.from(run);
+    if (points.length <= 2) {
       grams.push(run);
       continue;
     }
-    for (let index = 0; index < run.length - 1; index += 1) grams.push(run.slice(index, index + 2));
+    for (let index = 0; index < points.length - 1; index += 1) grams.push(points.slice(index, index + 2).join(""));
   }
   return [...new Set([...tokens, ...grams])].sort();
 }

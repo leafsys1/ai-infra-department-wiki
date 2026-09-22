@@ -140,6 +140,20 @@ describe("department retrieval", () => {
     assert.deepEqual(tokenize("训练吞吐"), ["吞吐", "练吞", "训练"]);
   });
 
+  it("keeps kana and astral ideographs inside one run", () => {
+    // The prolonged-sound mark is script-Common. Leaving it out of the class would split ケース into
+    // ケ + ス and quietly break Japanese queries.
+    assert.deepEqual(tokenize("ケース"), ["ケー", "ース"]);
+    // Decomposed kana normalizes to the precomposed form that records actually contain.
+    assert.deepEqual(tokenize("か\u3099"), tokenize("が"));
+    // Han outside the BMP is covered and stays whole; a UTF-16 slice used to emit lone surrogates as
+    // index terms, which can never match a query.
+    assert.deepEqual(tokenize("汉字𠀋扩展区"), ["字𠀋", "展区", "扩展", "汉字", "𠀋扩"]);
+    for (const token of tokenize("汉字𠀋扩展区")) {
+      assert.doesNotMatch(Buffer.from(token, "utf8").toString("utf8"), /\uFFFD/, token);
+    }
+  });
+
   it("names the fields a term really matched, instead of every field with any content", () => {
     const catalog = buildCatalog(corpus());
     // "deepseek" lives in model_family only; a term matched once must not claim the other fields.

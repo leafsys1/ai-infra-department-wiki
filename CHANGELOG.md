@@ -38,6 +38,7 @@
 - The CLI usage text listed three capture types while the implementation supported six.
 - The vendored toolchain reported itself as in sync because it compared the manifest with itself; drift is now computed from the files on disk, so a hand-edited pinned copy is reported.
 - `SKILL.md` named the pinned toolchain as `.department-tools/team-wiki.js` while `init` vendors it to `.department-tools/scripts/team-wiki.js`, so the command it documents as "the command CI uses" failed with `MODULE_NOT_FOUND` for anyone following the Skill literally. A scaffold test now asserts every `.department-tools/...` path the documentation names exists after `init`.
+- CJK tokenization now uses Unicode script properties plus the kana-block marks that are script-Common (`ー ゝ ゞ ゟ ゠ ・`, so `ケース` and `データ` stay single runs) instead of a chain of `\uXXXX` ranges. Coverage of kana and Han is unchanged on every file in this repository, supplementary ideographs are now covered as well, `NFC` folding absorbs decomposed kana, and bigrams walk code points — the old UTF-16 slice emitted lone surrogates as index terms for text outside the BMP. An installed Skill also no longer contains an escape chain for installers' scanners to flag.
 - `pull`/`sync` surfaced raw git failures (`fatal: ambiguous argument 'HEAD'`) for an uninitialized directory or a clone with no commits; both now return the actionable message, or say the repository has no commits yet.
 
 ### Governance
