@@ -29,6 +29,8 @@ const FIELDS = Object.freeze([
   "accelerator_model",
   "precision",
   "evidence",
+  "sources",
+  "summary",
   "targets",
 ]);
 
@@ -47,6 +49,8 @@ const WEIGHTS = Object.freeze({
   owners: 8,
   reviewers: 5,
   evidence: 5,
+  sources: 4,
+  summary: 8,
   targets: 5,
   type: 4,
   status: 6,
@@ -123,6 +127,8 @@ function recordFields(record) {
     accelerator_model: textOf(context.accelerator_model || data.accelerator_model),
     precision: textOf(context.precision || data.precision),
     evidence: asArray(data.evidence).join(" "),
+    sources: asArray(data.sources || data.source_urls || data.source).join(" "),
+    summary: textOf(data.summary || data.abstract),
     targets: relations.map((relation) => textOf(relation && relation.target)).join(" "),
     topology: Object.entries(topology).map(([key, value]) => `${key}${value}`).join(" "),
   };
