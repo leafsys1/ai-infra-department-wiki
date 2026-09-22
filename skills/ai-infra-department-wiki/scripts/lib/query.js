@@ -55,8 +55,6 @@ const WEIGHTS = Object.freeze({
 
 const BODY_WEIGHT = 3;
 
-const CJK = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
-
 function asArray(value) {
   return Array.isArray(value) ? value.map((item) => String(item)) : [];
 }
@@ -377,22 +375,6 @@ function overview(catalog) {
   };
 }
 
-function sinceRecords(catalog, since) {
-  const threshold = String(since);
-  return catalog.records
-    .filter((entry) => String(entry.updated || entry.created) >= threshold)
-    .sort((left, right) => (String(right.updated).localeCompare(String(left.updated))) || left.id.localeCompare(right.id))
-    .map((entry) => ({
-      id: entry.id,
-      type: entry.type,
-      title: entry.title,
-      status: entry.status,
-      owners: entry.owners,
-      updated: entry.updated,
-      path: entry.path,
-    }));
-}
-
 function renderOverviewMarkdown(overviewReport) {
   const lines = [
     "# Department Knowledge Overview",
@@ -461,11 +443,8 @@ function formatHit(hit, options = {}) {
 }
 
 module.exports = {
-  FIELDS,
-  WEIGHTS,
   buildCatalog,
   buildEdges,
-  catalogEntry,
   formatHit,
   matchesFilters,
   overview,
@@ -473,7 +452,5 @@ module.exports = {
   relatedRecords,
   renderIndexMarkdown,
   renderOverviewMarkdown,
-  sinceRecords,
   tokenize,
-  CJK,
 };

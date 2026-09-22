@@ -161,7 +161,6 @@ function compareGateRuns(baselineOutcomes, candidateOutcomes, options = {}) {
 }
 
 module.exports = {
-  DEFAULT_ALPHA,
   VERDICTS,
   compareGateRuns,
   exactBinomialP,

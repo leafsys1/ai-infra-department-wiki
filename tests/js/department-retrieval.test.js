@@ -12,7 +12,6 @@ const {
   relatedRecords,
   renderIndexMarkdown,
   renderOverviewMarkdown,
-  sinceRecords,
   tokenize,
 } = require("../../skills/ai-infra-department-wiki/scripts/lib/query");
 
@@ -202,12 +201,6 @@ describe("department retrieval", () => {
 
     assert.equal(relatedRecords(catalog, "NOPE-0000").found, false);
     assert.equal(buildEdges(catalog).length, 4);
-  });
-
-  it("lists what arrived since a date", () => {
-    const catalog = buildCatalog(corpus());
-    const recent = sinceRecords(catalog, "2026-09-11");
-    assert.deepEqual(recent.map((item) => item.id), ["CASE-2026-0002", "PAT-2026-0001"]);
   });
 
   it("renders index and overview deterministically", () => {

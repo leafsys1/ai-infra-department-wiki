@@ -295,10 +295,7 @@ function publishRecordSet(repoPath, targets, options = {}) {
 }
 
 module.exports = {
-  DEFAULT_BRANCH,
-  assertPublishable,
   changedRecordsBetween,
   resolvePublishSet,
   publishRecordSet,
-  validateCommittedTree,
 };

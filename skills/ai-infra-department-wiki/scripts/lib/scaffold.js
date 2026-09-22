@@ -426,12 +426,8 @@ module.exports = {
   RECORD_DIRECTORIES,
   TOOLS_DIRECTORY,
   TOOLS_MANIFEST,
-  VENDORED_DIRECTORIES,
   compareTools,
   initKnowledgeRepo,
-  readToolsManifest,
   skillVersion,
-  toolFiles,
   upgradeTools,
-  writeVendoredTools,
 };
