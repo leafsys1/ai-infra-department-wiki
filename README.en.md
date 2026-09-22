@@ -10,7 +10,7 @@ Based on [Andrej Karpathy](https://karpathy.ai/)'s [llm-wiki methodology](https:
 
 Turn scattered information into a growing, interconnected knowledge base
 
-[![version](https://img.shields.io/badge/v3.7.0-AI%20Infra%20Department%20Wiki-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/leafsys1/ai-infra-wiki-skill)
+[![version](https://img.shields.io/badge/v3.7.0-AI%20Infra%20Department%20Wiki-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/leafsys1/ai-infra-department-wiki)
 [![license](https://img.shields.io/badge/MIT-license-5a6e5c?style=flat-square&labelColor=3a3026)](LICENSE)
 [![platforms](https://img.shields.io/badge/Claude·Codex·OpenClaw·Hermes-multi--platform-7a96a6?style=flat-square&labelColor=3a3026)]
 
@@ -70,12 +70,12 @@ The core difference: knowledge is **compiled once and maintained continuously**,
 
 ## AI Infra Department Knowledge
 
-This fork also ships a self-contained `ai-infra-department-wiki` Skill for reviewed inference, training, communication, deployment, incident, and optimization knowledge. Personal `llm-wiki` remains a local source-compilation workflow; department knowledge uses a separate private Git repository with Case, Evidence, Decision, Pattern, and Runbook records.
+This repository ships, on top of `llm-wiki`, a self-contained `ai-infra-department-wiki` Skill for reviewed inference, training, communication, deployment, incident, and optimization knowledge. Personal `llm-wiki` remains a local source-compilation workflow; department knowledge uses a separate private Git repository with Case, Evidence, Decision, Pattern, and Runbook records.
 
 ```bash
 # 1) Install the Skill (either path)
-hermes skills tap add leafsys1/ai-infra-wiki-skill        # available once the Skill is on the default branch
-hermes skills install leafsys1/ai-infra-wiki-skill/skills/ai-infra-department-wiki
+hermes skills tap add leafsys1/ai-infra-department-wiki        # available once the Skill is on the default branch
+hermes skills install leafsys1/ai-infra-department-wiki/skills/ai-infra-department-wiki
 bash install.sh --platform hermes                          # or the unified installer (personal + department)
 
 # 2) See what the department already knows before adding to it
