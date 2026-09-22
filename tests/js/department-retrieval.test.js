@@ -89,7 +89,7 @@ describe("department retrieval", () => {
     const entry = first.records[0];
     assert.equal(entry.context.model_family, "deepseek");
     assert.deepEqual(entry.sources, []);
-    assert.equal(entry.summary, "");
+    assert.match(entry.summary, /body nothing searchable here/);
     assert.equal(entry.context.accelerator_model, "910b2c");
     assert.deepEqual(entry.owners, ["alice"]);
     assert.equal(entry.terms.includes("prefill"), true);

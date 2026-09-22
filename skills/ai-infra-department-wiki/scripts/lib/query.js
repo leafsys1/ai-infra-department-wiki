@@ -30,7 +30,6 @@ const FIELDS = Object.freeze([
   "precision",
   "evidence",
   "sources",
-  "summary",
   "targets",
 ]);
 
@@ -50,7 +49,6 @@ const WEIGHTS = Object.freeze({
   reviewers: 5,
   evidence: 5,
   sources: 4,
-  summary: 8,
   targets: 5,
   type: 4,
   status: 6,
@@ -104,6 +102,20 @@ function textOf(value) {
   return String(value);
 }
 
+function bodyExcerpt(source, limit = 1200) {
+  const body = String(source || "").replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "");
+  return body
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[*_>~-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, limit);
+}
+
 function recordFields(record) {
   const data = record.data || {};
   const context = data.context && typeof data.context === "object" ? data.context : {};
@@ -128,7 +140,6 @@ function recordFields(record) {
     precision: textOf(context.precision || data.precision),
     evidence: asArray(data.evidence).join(" "),
     sources: asArray(data.sources || data.source_urls || data.source).join(" "),
-    summary: textOf(data.summary || data.abstract),
     targets: relations.map((relation) => textOf(relation && relation.target)).join(" "),
     topology: Object.entries(topology).map(([key, value]) => `${key}${value}`).join(" "),
   };
@@ -165,7 +176,7 @@ function catalogEntry(record) {
     superseded_by: asArray(data.superseded_by).sort(),
     created: String(data.created || ""),
     updated: String(data.updated || ""),
-    summary: String(data.summary || data.abstract || ""),
+    summary: fields.summary || bodyExcerpt(record.source),
     sources: asArray(data.sources || data.source_urls || data.source).sort(),
     context: {
       workload: fields.workload || null,
