@@ -133,7 +133,8 @@ describe("department retrieval", () => {
     assert.ok(bodyOnly.hits[0].matched.includes("text:send"));
 
     const withoutSources = queryCatalog(catalog, { terms: ["send"], limit: 10 });
-    assert.equal(withoutSources.hit_count, 0);
+    assert.deepEqual(withoutSources.hits.map((hit) => hit.id), ["CASE-2026-0002"]);
+    assert.ok(withoutSources.hits[0].matched.includes("text:send"));
   });
 
   it("matches Chinese queries through CJK bigrams", () => {

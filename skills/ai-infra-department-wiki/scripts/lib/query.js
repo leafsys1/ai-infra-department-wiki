@@ -257,6 +257,7 @@ function queryCatalog(catalog, options = {}) {
   const any = options.any === true;
   const sources = options.sources || new Map();
   const hits = [];
+  const recordById = new Map((options.records || []).map((record) => [record.data?.id, record]));
 
   for (const entry of catalog.records) {
     if (!matchesFilters(entry, filters)) continue;
@@ -270,8 +271,10 @@ function queryCatalog(catalog, options = {}) {
         matched.push(...fields.map((field) => `${field}:${token}`));
         continue;
       }
-      const body = sources.get(entry.id);
-      if (body && token.length >= 2 && body.toLowerCase().includes(token)) {
+      const record = recordById.get(entry.id);
+      const body = sources.get(entry.id) || (record && record.source) || "";
+      const excerpt = entry.summary || bodyExcerpt(body);
+      if (excerpt && token.length >= 2 && excerpt.toLowerCase().includes(token)) {
         score += BODY_WEIGHT;
         matched.push(`text:${token}`);
         continue;
