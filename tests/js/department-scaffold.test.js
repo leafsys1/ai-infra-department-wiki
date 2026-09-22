@@ -237,4 +237,47 @@ describe("knowledge repository scaffolding", () => {
     assert.equal(result.status, 1);
     assert.match(result.stderr, /not an initialized knowledge repository/);
   });
+  it("documents only pinned paths that init actually writes", () => {
+    const repo = initializedRepo();
+    const documents = [
+      path.join(SKILL, "SKILL.md"),
+      ...fs.readdirSync(path.join(SKILL, "references")).map((name) => path.join(SKILL, "references", name)),
+    ];
+    const referenced = new Set();
+    for (const file of documents) {
+      for (const match of fs.readFileSync(file, "utf8").matchAll(/\.department-tools\/[A-Za-z0-9_./-]+/g)) {
+        referenced.add(match[0]);
+      }
+    }
+
+    assert.ok(referenced.size > 0, "expected the documentation to name the pinned toolchain");
+    for (const relative of referenced) {
+      assert.equal(
+        fs.existsSync(path.join(repo, relative)),
+        true,
+        `${relative} is documented but init does not write it — a colleague following the Skill would fail`,
+      );
+    }
+  });
+
+  it("tells a new colleague what to do instead of leaking git errors", () => {
+    const notARepository = makeTempDir("department-notrepo-");
+    const pulled = run(["pull", notARepository]);
+    assert.equal(pulled.status, 1);
+    assert.match(pulled.stderr, /not a git repository/);
+
+    const uninitialized = makeTempDir("department-uninit-sync-");
+    git(uninitialized, ["init"]);
+    const synced = run(["sync", uninitialized]);
+    assert.equal(synced.status, 1);
+    assert.match(synced.stderr, /not an initialized knowledge repository/);
+
+    const noCommit = makeTempDir("department-nocommit-");
+    assert.equal(run(["init", noCommit]).status, 0);
+    git(noCommit, ["init"]);
+    const empty = run(["pull", noCommit]);
+    assert.equal(empty.status, 1);
+    assert.match(empty.stderr, /has no commits yet/);
+    assert.doesNotMatch(empty.stderr, /ambiguous argument/);
+  });
 });

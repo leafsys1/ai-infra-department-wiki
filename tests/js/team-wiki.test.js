@@ -129,6 +129,21 @@ describe("department knowledge repository", () => {
     assert.match(fs.readFileSync(path.join(repo, ".gitignore"), "utf8"), /raw-local\//);
   });
 
+  it("reports an unpublished draft so a finished record cannot be lost quietly", () => {
+    const repo = makeTempDir("team-wiki-drafts-");
+    initKnowledgeRepo(repo, { name: "AI Infra Department" });
+    const cli = path.resolve(__dirname, "../../skills/ai-infra-department-wiki/scripts/team-wiki.js");
+    const captured = spawnSync(process.execPath, [cli, "capture", ".", "case", "CASE-2026-0007"], { cwd: repo, encoding: "utf8" });
+    assert.equal(captured.status, 0, captured.stderr);
+
+    const validated = spawnSync(process.execPath, [cli, "validate", "."], { cwd: repo, encoding: "utf8" });
+
+    assert.equal(validated.status, 0, validated.stderr);
+    assert.match(validated.stdout, /ok=true/);
+    assert.match(validated.stdout, /drafts=1 local only/);
+    assert.equal(validateKnowledgeRepo(repo).drafts, 1);
+  });
+
   it("accepts a verified case only when referenced evidence exists", () => {
     const repo = makeTempDir("team-wiki-valid-");
     initKnowledgeRepo(repo, { name: "AI Infra Department" });

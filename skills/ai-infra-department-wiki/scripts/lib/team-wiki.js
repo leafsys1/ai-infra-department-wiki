@@ -21,6 +21,8 @@ const RECORD_SCHEMA = "record.schema.json";
 // root would be silently left out of a single-URL install while the validator depends on it.
 const SCHEMA_DIRECTORY = path.resolve(__dirname, "..", "schemas");
 
+const CONFIG_FILE = ".department-wiki.json";
+
 const RECORD_DIRECTORIES = Object.freeze({
   case: "records/cases",
   evidence: "records/evidence",
@@ -274,13 +276,23 @@ function createSchemaSet() {
  * errors block a pull request; warnings are recorded and only block when `strict` is set (publish
  * and CI use strict so an intentional exception has to become an explicit policy `allow` entry).
  */
+/** Drafts stay local and gitignored, so nothing else reports them: without this a colleague can
+ *  finish a record, forget to move it into records/, and see every command stay green. */
+function countDrafts(root) {
+  const directory = path.join(root, "drafts");
+  if (!fs.existsSync(directory)) return 0;
+  return fs.readdirSync(directory, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .length;
+}
+
 function validateKnowledgeRepo(repoPath, options = {}) {
   const root = path.resolve(repoPath);
   const strict = options.strict === true;
-  const config = path.join(root, ".department-wiki.json");
+  const config = path.join(root, CONFIG_FILE);
   const errors = [];
   const warnings = [];
-  if (!fs.existsSync(config)) addError(errors, null, "configuration", "missing .department-wiki.json; run team-wiki init first");
+  if (!fs.existsSync(config)) addError(errors, null, "configuration", `missing ${CONFIG_FILE}; run team-wiki init first`);
 
   let policy;
   try {
@@ -298,7 +310,7 @@ function validateKnowledgeRepo(repoPath, options = {}) {
     records = loadRecords(root);
   } catch (error) {
     addError(errors, null, "frontmatter", error.message);
-    return { ok: false, strict, records: 0, errors, warnings, policy_file: policy.file, schema_errors: 0 };
+    return { ok: false, strict, records: 0, drafts: countDrafts(root), errors, warnings, policy_file: policy.file, schema_errors: 0 };
   }
 
   const byId = new Map();
@@ -332,6 +344,7 @@ function validateKnowledgeRepo(repoPath, options = {}) {
     ok: blocking === 0 && (!strict || warnings.length === 0),
     strict,
     records: records.length,
+    drafts: countDrafts(root),
     errors,
     warnings,
     policy_file: policy.file,
@@ -408,9 +421,24 @@ function git(repoPath, args) {
   return execFileSync("git", ["-C", repoPath, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 }
 
+function hasCommits(repoPath) {
+  try {
+    git(repoPath, ["rev-parse", "--verify", "--quiet", "HEAD"]);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 function pullKnowledgeRepo(repoPath) {
   const root = path.resolve(repoPath);
   if (!fs.existsSync(path.join(root, ".git"))) throw new Error("knowledge path is not a git repository");
+  // Check what the user can act on before shelling out: a raw git failure("ambiguous argument HEAD")
+  // tells a new colleague nothing about what to do next.
+  if (!fs.existsSync(path.join(root, CONFIG_FILE))) {
+    throw new Error(`${root} is not an initialized knowledge repository; run team-wiki init first`);
+  }
+  if (!hasCommits(root)) throw new Error("knowledge repository has no commits yet; commit the initialized repository before pulling");
   if (git(root, ["status", "--porcelain"])) throw new Error("knowledge repository has uncommitted changes; commit or discard them before pull");
   const before = git(root, ["rev-parse", "HEAD"]);
   git(root, ["fetch", "--prune", "origin"]);
@@ -421,6 +449,7 @@ function pullKnowledgeRepo(repoPath) {
 }
 
 module.exports = {
+  CONFIG_FILE,
   ID_PATTERNS,
   POLICY_FILE,
   RECORD_DIRECTORIES,

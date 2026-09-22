@@ -15,6 +15,11 @@
 - Added a `Support Files` manifest to `SKILL.md` and a package test that derives the required file set from the code, so a single-URL install fetches every file the CLI needs.
 - Integrated selected Google Research WikiSkill concepts: success/failure comparison, Pattern-to-Skill separation, identical held-out task sets, strict-improvement acceptance, paired outcomes, rejected-proposal retention, and exact-binomial diagnostics.
 
+### New
+
+- Added `workbench/scripts/verify-skill-install.mjs` (also `npm run verify:skill-install`, wired into the `department-skill` quality step): it assembles the Skill from the `SKILL.md` manifest alone — the same file set a URL install fetches — and then drives init, capture, validate, build, overview, query, the pinned CI command and a colleague clone-and-sync from that copy, so an unlisted runtime file or a documented path that does not exist fails in CI instead of on a colleague's machine.
+- `validate` counts `drafts/` and the CLI reports `drafts=N local only` — drafts are gitignored and invisible to every other command, so a colleague could finish a record, forget to move it into `records/`, and still see green output.
+
 ### Changed
 
 - `publish` now publishes a **record set** (the named records plus the records they newly reference) instead of a single file, validates the committed tree in a temporary worktree, rolls the branch back if it would not validate on its own, and prints a pull-request compare link. The unrelated-change guard is unchanged in force but now stated in terms of the set, so a case and its new evidence can be published together.
@@ -32,6 +37,8 @@
 - `validate` accepted a record stored in any subdirectory of its type directory (`records/cases/<anything>/`), because the directory check short-circuited on a prefix match.
 - The CLI usage text listed three capture types while the implementation supported six.
 - The vendored toolchain reported itself as in sync because it compared the manifest with itself; drift is now computed from the files on disk, so a hand-edited pinned copy is reported.
+- `SKILL.md` named the pinned toolchain as `.department-tools/team-wiki.js` while `init` vendors it to `.department-tools/scripts/team-wiki.js`, so the command it documents as "the command CI uses" failed with `MODULE_NOT_FOUND` for anyone following the Skill literally. A scaffold test now asserts every `.department-tools/...` path the documentation names exists after `init`.
+- `pull`/`sync` surfaced raw git failures (`fatal: ambiguous argument 'HEAD'`) for an uninitialized directory or a clone with no commits; both now return the actionable message, or say the repository has no commits yet.
 
 ### Governance
 

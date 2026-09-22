@@ -70,7 +70,7 @@ redaction policy, a CI workflow, a pull-request template and CODEOWNERS, and ven
 `.department-tools/` with a pinned version.
 
 Completion criterion: `.department-wiki.json` exists, `validate` returns `ok=true`, and
-`.department-tools/team-wiki.js validate . --strict` runs (that is the command CI uses).
+`.department-tools/scripts/team-wiki.js validate . --strict` runs (that is the command CI uses).
 
 ### Sync Before You Search
 
@@ -98,8 +98,9 @@ criterion: the draft contains context, evidence, applicability, and owner fields
 
 Run `validate` before any publish or review. Errors are blockers; warnings are surfaced and become
 blockers under `--strict`, which is what CI and `publish` use. Treat the scanner as a minimum control,
-not proof that content is safe. Completion criterion: `ok=true`, then a domain reviewer confirms claims
-and redaction.
+not proof that content is safe. `validate` also reports `drafts=N local only`: drafts are gitignored, so
+a finished draft that was never moved into `records/` reaches nobody however green the output is.
+Completion criterion: `ok=true`, then a domain reviewer confirms claims and redaction.
 
 ### Publish
 

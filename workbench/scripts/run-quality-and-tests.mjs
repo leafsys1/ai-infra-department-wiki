@@ -46,6 +46,7 @@ export const QUALITY_STEPS = [
 				"tests/js/team-wiki.test.js",
 				"tests/js/skill-gate.test.js",
 			]),
+			command(["workbench/scripts/verify-skill-install.mjs"]),
 		],
 	},
 	{

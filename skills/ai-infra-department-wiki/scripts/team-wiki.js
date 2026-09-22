@@ -153,7 +153,7 @@ function draftTemplate(type, id) {
 
 function capture(repoPath, type, id) {
   const root = path.resolve(repoPath);
-  if (!fs.existsSync(path.join(root, ".department-wiki.json"))) {
+  if (!fs.existsSync(path.join(root, core.CONFIG_FILE))) {
     throw new Error(`${root} is not an initialized knowledge repository; run team-wiki init first`);
   }
   const drafts = path.join(root, "drafts");
@@ -366,6 +366,9 @@ function main(argv) {
       process.stdout.write(`ok=${report.ok} records=${report.records} errors=${report.errors.length} warnings=${report.warnings.length}\n`);
     }
     if (command === "validate" && !flags.json) {
+      if (report.drafts > 0) {
+        process.stdout.write(`drafts=${report.drafts} local only; move a finished draft into records/ or it never leaves your machine\n`);
+      }
       for (const warning of report.warnings) process.stderr.write(`${warning.file || "<repo>"}: ${warning.code}: ${warning.message}\n`);
       for (const error of report.errors) process.stderr.write(`${error.file || "<repo>"}: ${error.code}: ${error.message}\n`);
     }
