@@ -61,6 +61,12 @@ function asArray(value) {
   return Array.isArray(value) ? value.map((item) => String(item)) : [];
 }
 
+function asList(value) {
+  if (Array.isArray(value)) return value.map((item) => String(item));
+  if (value === undefined || value === null || value === "") return [];
+  return [String(value)];
+}
+
 function flatten(value) {
   if (value === undefined || value === null) return [];
   if (Array.isArray(value)) return value.flatMap(flatten);
@@ -152,7 +158,12 @@ function recordFields(record) {
 function catalogEntry(record) {
   const data = record.data || {};
   const fields = recordFields(record);
-  const searchable = Object.fromEntries(FIELDS.map((field) => [field, (fields[field] || "").toLowerCase()]));
+  const entrySummary = fields.summary || bodyExcerpt(record.source);
+  const entrySources = asList(data.sources || data.source_urls || data.source).sort();
+  const searchable = Object.fromEntries(FIELDS.map((field) => {
+    const value = field === "summary" ? entrySummary : field === "sources" ? entrySources.join(" ") : fields[field];
+    return [field, String(value || "").toLowerCase()];
+  }));
   const tokens = new Set();
   for (const field of FIELDS) for (const token of tokenize(searchable[field])) tokens.add(token);
   for (const token of tokenize(fields.topology)) tokens.add(token);
@@ -167,7 +178,8 @@ function catalogEntry(record) {
     reviewers: asArray(data.reviewers).sort(),
     areas: asArray(data.areas).sort(),
     tags: asArray(data.tags).sort(),
-    evidence: asArray(data.evidence).sort(),
+    evidence: asList(data.evidence).sort(),
+    sources: entrySources,
     relations: (Array.isArray(data.relations) ? data.relations : [])
       .filter((relation) => relation && relation.type && relation.target)
       .map((relation) => ({ type: String(relation.type), target: String(relation.target) }))
@@ -176,8 +188,7 @@ function catalogEntry(record) {
     superseded_by: asArray(data.superseded_by).sort(),
     created: String(data.created || ""),
     updated: String(data.updated || ""),
-    summary: fields.summary || bodyExcerpt(record.source),
-    sources: asArray(data.sources || data.source_urls || data.source).sort(),
+    summary: entrySummary,
     context: {
       workload: fields.workload || null,
       model_family: fields.model_family || null,
