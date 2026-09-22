@@ -33,6 +33,7 @@ MANAGED_ITEMS=(
   "install.ps1"
   "scripts"
   "templates"
+  "references"
   "deps"
   "platforms"
   "packages/workbench-contracts/src/graph-rename-filename.js"
@@ -41,6 +42,7 @@ MANAGED_ITEMS=(
 DEP_SKILLS=()
 
 list_companion_skill_sources() {
+  printf '%s\n' "skills/ai-infra-department-wiki"
   case "$1" in
     claude)
       printf '%s\n' "platforms/claude/companions/llm-wiki-upgrade"
@@ -274,7 +276,7 @@ install_companion_skills() {
     [ -n "$skill_rel" ] || continue
 
     skill_source="$SCRIPT_DIR/$skill_rel"
-    skill_name="$(basename "$skill_rel")"
+    skill_name="${skill_rel##*/}"
     skill_target="$skill_root/$skill_name"
 
     if [ ! -d "$skill_source" ]; then

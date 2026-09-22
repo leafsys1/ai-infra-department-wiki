@@ -10,7 +10,7 @@
 
 把碎片化的信息变成持续积累、互相链接的知识库
 
-[![version](https://img.shields.io/badge/v3.6.91-图谱安全改名与恢复-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/sdyckjq-lab/llm-wiki-skill/releases)
+[![version](https://img.shields.io/badge/v3.7.0-AI%20Infra%20部门知识协作-E8D5B5?style=flat-square&labelColor=3a3026&color=E8D5B5)](https://github.com/leafsys1/ai-infra-wiki-skill)
 [![license](https://img.shields.io/badge/MIT-license-5a6e5c?style=flat-square&labelColor=3a3026)](LICENSE)
 [![platforms](https://img.shields.io/badge/Claude·Codex·OpenClaw·Hermes-多平台-7a96a6?style=flat-square&labelColor=3a3026)]
 
@@ -65,6 +65,61 @@ bash install.sh --platform hermes
 > "帮我消化这篇：<链接>"
 
 核心区别：知识被**编译一次，持续维护**，而不是每次查询都从原始文档重新推导。
+
+---
+
+## AI Infra 部门知识协作
+
+本 fork 新增 `ai-infra-department-wiki` Skill，用于多人沉淀和共享模型推理、训练、通信、部署、故障与项目调优经验。它与个人 `llm-wiki` 是两种明确分开的模式：
+
+| 模式 | 输入 | 主要产物 | 协作边界 |
+|---|---|---|---|
+| 个人 `llm-wiki` | 网页、PDF、笔记、对话 | 实体、主题、摘要、综合分析 | 本地个人知识库 |
+| 部门 `ai-infra-department-wiki` | 实验、项目、故障、评测和证据 | Case、Evidence、Decision、Pattern、Runbook | 私有 Git 仓 + 分支评审 |
+
+部门模式采用双仓：本仓只分发 Skill、模板、Schema 和校验工具；真实部门知识必须放在另一个**私有仓库**。不要把客户资料、日志、地址、凭据或内部性能数据提交到当前公开 fork。
+
+一个新人加入的完整闭环：
+
+```bash
+# 1) 安装 Skill（二选一）
+hermes skills tap add leafsys1/ai-infra-wiki-skill        # Skill 位于默认分支后可用
+hermes skills install leafsys1/ai-infra-wiki-skill/skills/ai-infra-department-wiki
+bash install.sh --platform hermes                          # 或统一安装器，同时装个人 + 部门两个 Skill
+
+# 2) 克隆部门知识仓，先看别人已经沉淀了什么
+node .department-tools/scripts/team-wiki.js sync .          # 拉取 + 报告本次新增/变更的记录 + 全仓统计
+node .department-tools/scripts/team-wiki.js query . 训练 吞吐 --accelerator 910b2c
+node .department-tools/scripts/team-wiki.js related . CASE-2026-0001
+
+# 3) 自己沉淀：从模板起草 → 校验 → 发布为贡献分支 → 开 PR
+node .department-tools/scripts/team-wiki.js capture . case CASE-2026-0007
+node .department-tools/scripts/team-wiki.js validate . --strict
+node .department-tools/scripts/team-wiki.js publish . records/cases/inference/CASE-2026-0007.md --push
+```
+
+`init` 会把校验器、Schema、模板**固定版本内置**到知识仓的 `.department-tools/` 并生成 CI、PR 模板与 CODEOWNERS，因此：CI 无需安装 Skill 即可校验 PR；所有同事用同一份规则；工具升级是一次可评审的 diff（`upgrade-tools`）。
+
+检索是部门模式的核心能力：`query` 按字段加权打分（id/标题/标签/模型/加速器/框架…）并给出命中原因，支持 `--type/--status/--area/--owner/--tag/--model/--framework/--accelerator/--since` 过滤器与 `--any`；中文按二元组切分，无需分词器。`build` 会生成 `generated/index.md`、`catalog.json`、`overview.md`、`graph-data.json` 四份**确定性**产物（同输入字节一致、被 gitignore、不作为事实源）。
+
+部门记录强制保留模型、硬件、框架版本、并行拓扑、测试口径、证据定位、验证等级、适用边界和替代关系。自动生成的索引与图谱不作为事实源。
+
+### 与 Google Research WikiSkill 的关系
+
+本项目原有的 Karpathy `llm-wiki` 解决“把外部素材编译成可查询知识”；Google Research WikiSkill 解决“把 Agent 的任务成败轨迹编译成 Pattern，再用留出任务验证 Skill 改动”。二者互补。
+
+部门模式已吸收以下机制：
+
+- 同时保留成功与失败 Case，从对照中提炼 Pattern；
+- Pattern 升级为 Skill candidate 前使用固定留出任务；
+- baseline 和 candidate 必须使用完全相同的任务 ID；
+- 只有候选得分严格提升才通过机械 gate；
+- 永久保留拒绝提案 ID、逐任务配对结果和影响账本，避免重复失败；
+- 提供无第三方依赖的配对精确二项统计诊断。
+
+在此之上补了一条论文规则会漏掉的判据：**分辨力下限**。`R_val > R_best` 在小留出集上会因单个任务翻转就接受候选，同时配对检验报出 `p = 1`——算术没错，结论不成立。所以 `gate` 会额外报告：观察到多少不一致任务对、在当前 alpha 下显著需要多少对、以及这组任务**最小能分辨多小的提升**（MDE）。达不到下限时结论是 `rejected_not_enough_resolution`（“分辨不出来”），而不是“没有收益”；关键任务回退一票否决，优先于均值。
+
+部门模式不会自动修改正式 Skill、自动发布、自动合并，也不会在共享知识仓执行 `git reset --hard`。机械 gate 通过后仍需人工检查安全、精度、回归、适用范围与许可证。详细对照见 [`references/wikiskill-comparison.md`](references/wikiskill-comparison.md)。
 
 ---
 
@@ -324,6 +379,8 @@ Windows 上 Python 通常安装为 `python.exe` 而非 `python3.exe`（Microsoft
 - **[baoyu-url-to-markdown](https://github.com/JimLiu/baoyu-skills#baoyu-url-to-markdown)** by [JimLiu](https://github.com/JimLiu) — 网页、X/Twitter 内容提取
 - **youtube-transcript** — YouTube 字幕提取
 - **[wechat-article-to-markdown](https://github.com/jackwener/wechat-article-to-markdown)** — 微信公众号文章提取
+- **[WikiSkill](https://arxiv.org/abs/2608.27454)** by Google Research — Raw / Wiki / Skill 三层经验编译、Skill 提案与留出集门禁方法论
+- **[ashutoshsinghpr7/wikiskill](https://github.com/ashutoshsinghpr7/wikiskill)** — WikiSkill 论文的开源复刻实现，本 fork 参考其可审计 gate、配对比较和拒绝影响账本设计；未复制其自动回滚或自动发布行为
 
 ## License
 

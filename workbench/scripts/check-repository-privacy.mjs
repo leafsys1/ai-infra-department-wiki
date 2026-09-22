@@ -10,7 +10,7 @@ const ROOT_FILES = [
 	"CLAUDE.md",
 	"packages/graph-engine/CONTEXT.md",
 ];
-const PROTECTED_DIRECTORIES = ["docs", "workbench"];
+const PROTECTED_DIRECTORIES = ["docs", "workbench", "skills", "references", "schemas", "templates/department"];
 const IGNORED_DIRECTORIES = new Set([
 	".git",
 	".tmp",

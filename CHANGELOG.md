@@ -1,5 +1,52 @@
 # Changelog
 
+## v3.7.0 (2026-09-21)
+
+### New
+
+- Added a self-contained `ai-infra-department-wiki` Skill for reviewed, evidence-backed AI Infra knowledge collaboration through a separate private repository.
+- Added Case, Evidence, Decision, Pattern, Runbook, and Environment templates plus machine-readable record, relation, and Skill-gate schemas — now **enforced** by `validate` through a dependency-free JSON Schema subset validator, not shipped as documentation.
+- Added `team-wiki` workflows for initialization, clean fast-forward pull, local capture, validation, deterministic build, health checks, contribution publishing, and held-out Skill gating.
+- Added a retrieval layer: `query` (field-weighted scoring, AND/OR terms, per-hit reasons, metadata filters, CJK bigram tokenization), `show`, `related` (both directions of the relation graph), `overview` (corpus aggregates by type, status, area, owner, model, accelerator), and `sync` (fast-forward plus "what is new to you" — the first sync from a clone lists the corpus, later syncs list the delta since that colleague's last sync, tracked in a gitignored local marker and derived from the Git diff rather than the `updated` field).
+- Added `generated/catalog.json` and `generated/overview.md` alongside the index and graph, all deterministic and gitignored.
+- Added a repository-level redaction policy (`.department-redaction.json`) with `block` / `warn` / `allow` / `disable_builtin`, merged with built-in credential, personal-path and private-address rules, and built-in warnings for public IPv4 and host tags.
+- Added governance scaffolding on `init`: a validation CI workflow, pull-request template, CODEOWNERS skeleton, CONTRIBUTING guide, redaction policy, and a **pinned toolchain** vendored into `.department-tools/` with per-file hashes so CI validates without installing the Skill and every colleague uses the same rules. `upgrade-tools` reports and applies toolchain drift.
+- Added `rejected_not_enough_resolution` and `rejected_critical_regression` gate verdicts with an explicit resolution floor: the gate reports observed discordant pairs, the pairs significance requires, and the minimum detectable effect of the task set.
+- Added a `Support Files` manifest to `SKILL.md` and a package test that derives the required file set from the code, so a single-URL install fetches every file the CLI needs.
+- Integrated selected Google Research WikiSkill concepts: success/failure comparison, Pattern-to-Skill separation, identical held-out task sets, strict-improvement acceptance, paired outcomes, rejected-proposal retention, and exact-binomial diagnostics.
+
+### New
+
+- Added `workbench/scripts/verify-skill-install.mjs` (also `npm run verify:skill-install`, wired into the `department-skill` quality step): it assembles the Skill from the `SKILL.md` manifest alone — the same file set a URL install fetches — and then drives init, capture, validate, build, overview, query, the pinned CI command and a colleague clone-and-sync from that copy, so an unlisted runtime file or a documented path that does not exist fails in CI instead of on a colleague's machine.
+- `validate` counts `drafts/` and the CLI reports `drafts=N local only` — drafts are gitignored and invisible to every other command, so a colleague could finish a record, forget to move it into `records/`, and still see green output.
+
+### Changed
+
+- `publish` now publishes a **record set** (the named records plus the records they newly reference) instead of a single file, validates the committed tree in a temporary worktree, rolls the branch back if it would not validate on its own, and prints a pull-request compare link. The unrelated-change guard is unchanged in force but now stated in terms of the set, so a case and its new evidence can be published together.
+- `init` is safe on a non-empty directory and idempotent: it completes an existing repository, reports what it added and kept, and never overwrites an existing file. Previously it refused any directory containing files, which rejected the ordinary case of a fresh private repository with a README.
+- `validate` distinguishes blockers from warnings; `--strict` (used by CI and `publish`) promotes warnings to failures so an intentional exception must become an explicit policy `allow` entry.
+- Gate semantics: a single flipped held-out task no longer accepts a candidate. Verdicts, exit codes and the report shape changed accordingly; `accepted=true` now requires clearing the significance floor, the minimum effect, and the critical-task check.
+- `validate` output gained warning counts, the policy file and rule count, and schema error counts; `health` reports `ok` as well.
+- Reworked `SKILL.md`: eleven commands documented, a retrieval-first workflow ("sync before you search, query before you derive"), and the pitfalls that actually cost time (plain markdown under `records/`, editing `.department-tools/` by hand, disabling a built-in rule instead of an `allow` entry).
+- The shipped schemas moved to `scripts/schemas/`. Installers fetch a Skill's support files only from `references/`, `templates/`, `scripts/`, `assets/` and `examples/`, so a schema directory at the Skill root was silently left out of a URL install while the validator now depends on it; the package test asserts every manifest entry lives under a fetchable directory.
+- `references/` gained `retrieval-and-sync.md` and `knowledge-repo-governance.md`, and the existing documents were extended to match the enforced behaviour.
+
+### Fixed
+
+- A single-URL Skill install produced a Skill whose CLI could not start (`Cannot find module './lib/team-wiki'`) because only the files linked from the prose were fetched. The manifest plus the package test fix the install and prevent recurrence; an incomplete installation now prints what is missing instead of a raw stack trace.
+- `validate` accepted a record stored in any subdirectory of its type directory (`records/cases/<anything>/`), because the directory check short-circuited on a prefix match.
+- The CLI usage text listed three capture types while the implementation supported six.
+- The vendored toolchain reported itself as in sync because it compared the manifest with itself; drift is now computed from the files on disk, so a hand-edited pinned copy is reported.
+- `SKILL.md` named the pinned toolchain as `.department-tools/team-wiki.js` while `init` vendors it to `.department-tools/scripts/team-wiki.js`, so the command it documents as "the command CI uses" failed with `MODULE_NOT_FOUND` for anyone following the Skill literally. A scaffold test now asserts every `.department-tools/...` path the documentation names exists after `init`.
+- `pull`/`sync` surfaced raw git failures (`fatal: ambiguous argument 'HEAD'`) for an uninitialized directory or a clone with no commits; both now return the actionable message, or say the repository has no commits yet.
+
+### Governance
+
+- Added contributor, security, CODEOWNERS, PR review, provider-boundary, redaction, and evidence policies.
+- Department knowledge is explicitly excluded from this public fork and must live in a separate private repository.
+- The local Workbench remains a single-user client and is not promoted as a department service.
+- Recorded the paper-versus-reproduction review that explains which WikiSkill mechanisms are integrated, which are deliberately not, and why the resolution floor is a departure from the paper's acceptance rule.
+
 ## v3.6.91 (2026-07-26)
 
 ### 修复

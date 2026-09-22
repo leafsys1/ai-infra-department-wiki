@@ -32,6 +32,24 @@ const shellCommand = (file) => ({ command: "bash", args: [file], cwd: REPO_ROOT 
 
 export const QUALITY_STEPS = [
 	{
+		id: "department-skill",
+		timeoutMs: COMMAND_TIMEOUT_MS,
+		commands: [
+			command(["--test",
+				"tests/js/department-skill-package.test.js",
+				"tests/js/department-retrieval.test.js",
+				"tests/js/department-schema.test.js",
+				"tests/js/department-policy.test.js",
+				"tests/js/department-scaffold.test.js",
+				"tests/js/department-publish-set.test.js",
+				"tests/js/skill-package-manifest.test.js",
+				"tests/js/team-wiki.test.js",
+				"tests/js/skill-gate.test.js",
+			]),
+			command(["workbench/scripts/verify-skill-install.mjs"]),
+		],
+	},
+	{
 		id: "repository-privacy",
 		timeoutMs: COMMAND_TIMEOUT_MS,
 		commands: [
