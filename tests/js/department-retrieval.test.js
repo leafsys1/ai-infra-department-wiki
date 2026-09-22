@@ -90,6 +90,7 @@ describe("department retrieval", () => {
     assert.equal(entry.context.model_family, "deepseek");
     assert.deepEqual(entry.sources, []);
     assert.match(entry.summary, /body nothing searchable here/);
+    assert.equal(entry.content, "# body\nnothing searchable here");
     const legacy = record("CASE-LEGACY", { type: "case", title: "Legacy", source: "https://example.test/evidence", evidence: "EVD-LEGACY" }, "records/cases/legacy/CASE-LEGACY.md", "# Legacy body\n");
     const legacyEntry = buildCatalog([legacy]).records[0];
     assert.deepEqual(legacyEntry.sources, ["https://example.test/evidence"]);

@@ -108,9 +108,12 @@ function textOf(value) {
   return String(value);
 }
 
+function markdownBody(source) {
+  return String(source || "").replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "").trim();
+}
+
 function bodyExcerpt(source, limit = 1200) {
-  const body = String(source || "").replace(/^---\r?\n[\s\S]*?\r?\n---(?:\r?\n|$)/, "");
-  return body
+  return markdownBody(source)
     .replace(/^#{1,6}\s+/gm, "")
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`([^`]+)`/g, "$1")
@@ -158,7 +161,7 @@ function recordFields(record) {
 function catalogEntry(record) {
   const data = record.data || {};
   const fields = recordFields(record);
-  const entrySummary = fields.summary || bodyExcerpt(record.source);
+  const entrySummary = String(data.summary || data.abstract || bodyExcerpt(record.source));
   const entrySources = asList(data.sources || data.source_urls || data.source).sort();
   const searchable = Object.fromEntries(FIELDS.map((field) => {
     const value = field === "summary" ? entrySummary : field === "sources" ? entrySources.join(" ") : fields[field];
@@ -189,6 +192,7 @@ function catalogEntry(record) {
     created: String(data.created || ""),
     updated: String(data.updated || ""),
     summary: entrySummary,
+    content: markdownBody(record.source),
     context: {
       workload: fields.workload || null,
       model_family: fields.model_family || null,
