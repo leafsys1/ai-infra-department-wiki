@@ -41,7 +41,7 @@ function manifestFromSkillFile(source) {
 /** Files the CLI cannot start or cannot complete a command without. */
 function requiredFiles() {
   const required = [];
-  for (const directory of ["scripts", "templates", "schemas"]) {
+  for (const directory of ["scripts", "templates"]) {
     for (const relative of listFiles(path.join(SKILL, directory))) required.push(`${directory}/${relative}`);
   }
   // Every module in the require() graph of the CLI entry point.
@@ -75,10 +75,17 @@ describe("Skill package surface", () => {
 
   it("keeps the manifest free of paths the installer would refuse or skip", () => {
     const manifest = manifestFromSkillFile(fs.readFileSync(SKILL_FILE, "utf8"));
+    // Hermes installers fetch support files only from these directories (tools/skills_hub_models.py
+    // _ALLOWED_SUPPORT_DIRS). A path outside them is silently skipped, which is how a skill "installs
+    // successfully" and then cannot start.
+    const fetchable = ["references", "templates", "scripts", "assets", "examples"];
 
     for (const entry of manifest) {
       assert.doesNotMatch(entry, /[*?<>]/, `${entry} contains a glob the installer skips`);
-      assert.match(entry, /^(references|templates|scripts|schemas)\//, `${entry} is outside the directories an installer fetches`);
+      assert.ok(
+        fetchable.includes(entry.split("/")[0]),
+        `${entry} lives outside the directories an installer fetches (${fetchable.join(", ")})`,
+      );
       assert.ok(fs.existsSync(path.join(SKILL, entry)), `${entry} does not exist`);
     }
     assert.equal(new Set(manifest).size, manifest.length, "duplicate entries in the manifest");
@@ -95,16 +102,14 @@ describe("Skill package surface", () => {
   });
 
   it("keeps the root compatibility copies identical to the packaged Skill", () => {
-    for (const directory of ["references", "schemas"]) {
-      for (const relative of listFiles(path.join(SKILL, directory))) {
-        const rootCopy = path.join(ROOT, directory, relative);
-        assert.ok(fs.existsSync(rootCopy), `root ${directory}/${relative} is missing`);
-        assert.equal(
-          fs.readFileSync(rootCopy, "utf8"),
-          fs.readFileSync(path.join(SKILL, directory, relative), "utf8"),
-          `${directory}/${relative} drifted from the packaged Skill`,
-        );
-      }
+    for (const relative of listFiles(path.join(SKILL, "references"))) {
+      const rootCopy = path.join(ROOT, "references", relative);
+      assert.ok(fs.existsSync(rootCopy), `root references/${relative} is missing`);
+      assert.equal(
+        fs.readFileSync(rootCopy, "utf8"),
+        fs.readFileSync(path.join(SKILL, "references", relative), "utf8"),
+        `references/${relative} drifted from the packaged Skill`,
+      );
     }
   });
 

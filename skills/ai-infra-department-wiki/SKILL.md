@@ -190,9 +190,9 @@ scripts/lib/policy.js
 scripts/lib/scaffold.js
 scripts/lib/publish.js
 scripts/lib/skill-gate.js
-schemas/record.schema.json
-schemas/relation.schema.json
-schemas/skill-gate.schema.json
+scripts/schemas/record.schema.json
+scripts/schemas/relation.schema.json
+scripts/schemas/skill-gate.schema.json
 templates/department/case-template.md
 templates/department/evidence-template.md
 templates/department/decision-template.md

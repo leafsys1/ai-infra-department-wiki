@@ -16,7 +16,10 @@ const { SchemaSet } = require("./schema");
 const { initKnowledgeRepo: scaffoldKnowledgeRepo, skillVersion } = require("./scaffold");
 
 const RECORD_SCHEMA = "record.schema.json";
-const SCHEMA_DIRECTORY = path.resolve(__dirname, "..", "..", "schemas");
+// The schemas live under scripts/ on purpose: Hermes installers fetch a Skill's support files only
+// from references/, templates/, scripts/, assets/ and examples/, so a schema directory at the Skill
+// root would be silently left out of a single-URL install while the validator depends on it.
+const SCHEMA_DIRECTORY = path.resolve(__dirname, "..", "schemas");
 
 const RECORD_DIRECTORIES = Object.freeze({
   case: "records/cases",
@@ -257,7 +260,7 @@ function collectReferences(record) {
 function createSchemaSet() {
   try {
     if (!fs.existsSync(path.join(SCHEMA_DIRECTORY, RECORD_SCHEMA))) {
-      return { error: `schema files are missing at ${SCHEMA_DIRECTORY}; reinstall the Skill (the schemas directory must sit next to scripts/)` };
+      return { error: `schema files are missing at ${SCHEMA_DIRECTORY}; reinstall the Skill (the scripts/schemas directory must ship with scripts/lib)` };
     }
     return { schemas: new SchemaSet(SCHEMA_DIRECTORY) };
   } catch (error) {

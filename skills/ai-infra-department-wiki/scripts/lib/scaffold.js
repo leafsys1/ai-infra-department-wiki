@@ -23,7 +23,7 @@ const { POLICY_FILE, defaultPolicyConfig } = require("./policy");
 
 const TOOLS_DIRECTORY = ".department-tools";
 const TOOLS_MANIFEST = `${TOOLS_DIRECTORY}/TOOLS.json`;
-const VENDORED_DIRECTORIES = Object.freeze(["scripts", "schemas", "templates"]);
+const VENDORED_DIRECTORIES = Object.freeze(["scripts", "templates"]);
 const RECORD_DIRECTORIES = Object.freeze([
   "records/cases/inference",
   "records/cases/training",
@@ -260,7 +260,7 @@ function codeownersFile(config) {
     "# Schema, policy and pinned tooling changes need a governance review.",
     "/" + POLICY_FILE + " ${GOVERNANCE_OWNER}",
     "/" + TOOLS_DIRECTORY + "/ ${GOVERNANCE_OWNER}",
-    "/schemas/ ${GOVERNANCE_OWNER}",
+    "/scripts/schemas/ ${GOVERNANCE_OWNER}",
     "",
   ];
   return `${lines.join("\n").replace(/\$\{(\w+)\}/g, (match, name) => (name === "OWNER" ? "@REPLACE-WITH-ORG-TEAM" : "@REPLACE-WITH-AREA-OWNER"))}`;

@@ -16,7 +16,7 @@ Each type has a directory under `records/` (`records/cases/<area>/` for cases) a
 
 ## Machine-Readable Contract
 
-`schemas/record.schema.json`, `relation.schema.json` and `skill-gate.schema.json` are **enforced**, not
+`scripts/schemas/record.schema.json`, `relation.schema.json` and `skill-gate.schema.json` are **enforced**, not
 documentation: `validate` loads them and fails a record that violates them, and a gate report is
 checked against the gate schema. The hand-written validator keeps the stable diagnostic codes for the
 fields it has always covered; anything the schemas add — a new required field, a length or item count,

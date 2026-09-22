@@ -34,7 +34,6 @@ MANAGED_ITEMS=(
   "scripts"
   "templates"
   "references"
-  "schemas"
   "deps"
   "platforms"
   "packages/workbench-contracts/src/graph-rename-filename.js"

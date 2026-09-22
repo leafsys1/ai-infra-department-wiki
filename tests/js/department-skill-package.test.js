@@ -20,7 +20,7 @@ describe("department skill package", () => {
       "templates/department/case-template.md",
       "references/ai-infra-schema.md",
       "references/wikiskill-comparison.md",
-      "schemas/record.schema.json",
+      "scripts/schemas/record.schema.json",
     ]) {
       assert.equal(fs.existsSync(path.join(SKILL, relative)), true, relative);
     }
@@ -48,9 +48,6 @@ describe("department skill package", () => {
       "references/security-and-redaction.md",
       "references/review-policy.md",
       "references/wikiskill-comparison.md",
-      "schemas/record.schema.json",
-      "schemas/relation.schema.json",
-      "schemas/skill-gate.schema.json",
     ]) {
       assert.equal(fs.readFileSync(path.join(ROOT, relative), "utf8"), fs.readFileSync(path.join(SKILL, relative), "utf8"), relative);
     }

@@ -23,6 +23,7 @@
 - Gate semantics: a single flipped held-out task no longer accepts a candidate. Verdicts, exit codes and the report shape changed accordingly; `accepted=true` now requires clearing the significance floor, the minimum effect, and the critical-task check.
 - `validate` output gained warning counts, the policy file and rule count, and schema error counts; `health` reports `ok` as well.
 - Reworked `SKILL.md`: eleven commands documented, a retrieval-first workflow ("sync before you search, query before you derive"), and the pitfalls that actually cost time (plain markdown under `records/`, editing `.department-tools/` by hand, disabling a built-in rule instead of an `allow` entry).
+- The shipped schemas moved to `scripts/schemas/`. Installers fetch a Skill's support files only from `references/`, `templates/`, `scripts/`, `assets/` and `examples/`, so a schema directory at the Skill root was silently left out of a URL install while the validator now depends on it; the package test asserts every manifest entry lives under a fetchable directory.
 - `references/` gained `retrieval-and-sync.md` and `knowledge-repo-governance.md`, and the existing documents were extended to match the enforced behaviour.
 
 ### Fixed
