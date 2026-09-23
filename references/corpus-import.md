@@ -44,6 +44,17 @@ archive, a colleague's machine. Freeze the smallest thing that lets the reader c
 4. The record body's *Controlled Source Location* names the upstream source and states plainly which
    part is frozen here and which part is only a pointer.
 
+**Label condensation as condensation.** Write `逐字` / "verbatim" only where the text is byte-identical to
+the source. If a quoted block merges several source lines into one, renumbers a list, or summarises a
+section, say so where the block starts (`要点归纳（非逐字）`). A block introduced as a quotation that is
+actually a summary is worse than no excerpt at all: it looks verifiable and is not. Elisions belong in
+`…` markers, which a checker can see through; a paraphrase hides behind the same quotation marks.
+
+**Redaction must be visible at the point of substitution.** Deleting text is checkable (the `…` shows it).
+Replacing a path or an internal name with a placeholder changes the quoted bytes, so state it in the
+excerpt header and again where it happens — otherwise the one line a reader most wants to trust is the
+one line that is not what it claims to be.
+
 Frozen artifacts are immutable. When the source grows or a check is re-run, add a **new** artifact and a
 **new** evidence record; never edit the old one.
 
