@@ -37,6 +37,7 @@ export const QUALITY_STEPS = [
 		commands: [
 			command(["--test",
 				"tests/js/department-skill-package.test.js",
+				"tests/js/department-dashboard.test.js",
 				"tests/js/department-retrieval.test.js",
 				"tests/js/department-schema.test.js",
 				"tests/js/department-policy.test.js",

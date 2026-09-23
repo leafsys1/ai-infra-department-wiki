@@ -378,6 +378,7 @@ function main(argv) {
   if (command === "build") {
     const result = core.buildKnowledgeArtifacts(repoPath, { strict: flags.strict === true });
     process.stdout.write(`nodes=${result.nodes} edges=${result.edges} records=${result.records} warnings=${result.warnings}\n`);
+    if (result.dashboard) process.stdout.write(`dashboard=${path.join(path.resolve(repoPath), "generated", "dashboard.html")}\n`);
     return 0;
   }
 

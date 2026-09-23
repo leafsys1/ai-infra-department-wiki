@@ -23,7 +23,7 @@ const { POLICY_FILE, defaultPolicyConfig } = require("./policy");
 
 const TOOLS_DIRECTORY = ".department-tools";
 const TOOLS_MANIFEST = `${TOOLS_DIRECTORY}/TOOLS.json`;
-const VENDORED_DIRECTORIES = Object.freeze(["scripts", "templates"]);
+const VENDORED_DIRECTORIES = Object.freeze(["scripts", "templates", "assets"]);
 const RECORD_DIRECTORIES = Object.freeze([
   "records/cases/inference",
   "records/cases/training",

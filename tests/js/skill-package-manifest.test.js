@@ -62,6 +62,9 @@ function requiredFiles() {
   for (const module of seen) assert.ok(required.includes(module), `${module} must be part of the runtime set`);
   // Documentation the Skill instructs the agent to read before acting.
   for (const reference of listFiles(path.join(SKILL, "references"))) required.push(`references/${reference}`);
+  // The single-file dashboard `build` copies beside the catalog. Not needed to start the CLI, but the
+  // documented "Open The Dashboard" step is broken without it, so it ships in the same manifest.
+  for (const asset of listFiles(path.join(SKILL, "assets"))) required.push(`assets/${asset}`);
   return [...new Set(required)].sort();
 }
 

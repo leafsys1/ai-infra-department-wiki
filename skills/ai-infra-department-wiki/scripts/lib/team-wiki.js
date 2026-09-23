@@ -20,6 +20,9 @@ const RECORD_SCHEMA = "record.schema.json";
 // from references/, templates/, scripts/, assets/ and examples/, so a schema directory at the Skill
 // root would be silently left out of a single-URL install while the validator depends on it.
 const SCHEMA_DIRECTORY = path.resolve(__dirname, "..", "schemas");
+// Shipped with the Skill and pinned into the knowledge repository's .department-tools/, so `build`
+// can always drop a copy of the dashboard beside the catalog it renders.
+const DASHBOARD_ASSET = "assets/dashboard/index.html";
 
 const CONFIG_FILE = ".department-wiki.json";
 
@@ -407,11 +410,19 @@ function buildKnowledgeArtifacts(repoPath, options = {}) {
   };
   fs.writeFileSync(path.join(generated, "health-report.json"), `${JSON.stringify(health, null, 2)}\n`, "utf8");
 
+  // The dashboard is a single self-contained file, so it is copied next to the catalog it reads.
+  // Opening generated/dashboard.html over HTTP(S) auto-loads ./catalog.json; from file:// the
+  // browser forbids that fetch, so the page falls back to its manual import button.
+  const dashboardSource = path.resolve(__dirname, "..", "..", DASHBOARD_ASSET);
+  const dashboard = fs.existsSync(dashboardSource);
+  if (dashboard) fs.copyFileSync(dashboardSource, path.join(generated, "dashboard.html"));
+
   return {
     nodes: nodes.length,
     edges: edges.length,
     records: records.length,
     warnings: report.warnings.length,
+    dashboard,
     catalog,
     overview: overviewReport,
   };

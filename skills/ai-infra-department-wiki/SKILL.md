@@ -118,9 +118,25 @@ in isolation, and a remote push is read back when requested.
 
 ### Compile And Query Artifacts
 
-`build` regenerates four local artifacts deterministically: `index.md`, `catalog.json`, `overview.md`
-and `graph-data.json`. They are gitignored and never an authority for a claim. Human edits go to
-source records. Completion criterion: a rebuild produces identical bytes and `validate` stays `ok=true`.
+`build` regenerates the local artifacts deterministically: `index.md`, `catalog.json`, `overview.md`,
+`graph-data.json` and `dashboard.html`. They are gitignored and never an authority for a claim. Human
+edits go to source records. Completion criterion: a rebuild produces identical bytes and `validate`
+stays `ok=true`.
+
+### Open The Dashboard
+
+`build` copies the shipped single-file dashboard (`assets/dashboard/index.html`) to
+`<repo>/generated/dashboard.html`, next to the `catalog.json` it renders. There is no server and no
+build step.
+
+1. Run `node .department-tools/scripts/team-wiki.js build <repo>`.
+2. Open `<repo>/generated/dashboard.html` in a browser.
+3. Over `http(s)://` it auto-loads `./catalog.json`. From `file://` the browser blocks that fetch, so
+   click **导入 catalog.json** and select `<repo>/generated/catalog.json`.
+
+The page shows the corpus overview, a type-organised knowledge tree, a Markdown reader with each
+record's body, the relation graph, cross-references and sources. Agents never read this file: they use
+`query`, `show`, `related` and `overview`, which return the same catalog data.
 
 ### Evolve A Skill
 
@@ -212,6 +228,7 @@ references/review-policy.md
 references/security-and-redaction.md
 references/wikiskill-comparison.md
 references/inference-delivery-qa-bridge.md
+assets/dashboard/index.html
 ```
 
 If a command fails with `Cannot find module './lib/…'` or `department template missing`, the

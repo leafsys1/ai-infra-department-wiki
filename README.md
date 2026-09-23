@@ -94,18 +94,24 @@ python3 skills/inference-delivery-qa/scripts/qa.py audit --root <run>/evidence -
 质检结果按 `references/inference-delivery-qa-bridge.md` 入库：质检包是 Evidence 集合，Case 保存结论和适用边界；`HOLD`、`BLOCKED`、`PENDING_INDEPENDENT_REVIEW` 不得写成 `verified`，客户放行必须由独立授权人员批准确切冻结包。
 
 
-打开 [中文知识看板](docs/department-dashboard/index.html)。它是单文件、无构建、无服务器的 GitHub 风格阅读界面：
+看板随 Skill 一起分发（`skills/ai-infra-department-wiki/assets/dashboard/index.html`），`build` 会把它复制到知识仓的 `generated/dashboard.html`，与它读取的 `catalog.json` 同目录。它是单文件、无构建、无服务器的 GitHub 风格阅读界面：
 
 - **概览**：知识总量、已验证比例、贡献者、关系数、活动热力图
 - **知识目录树**：按 Case、Evidence、Decision、Pattern、Runbook、Environment 浏览
-- **知识阅读**：记录标题、正文摘要、状态、负责人、模型、加速器、标签、更新时间
+- **知识阅读**：记录标题、Markdown 正文、状态、负责人、模型、加速器、标签、更新时间
 - **引用和来源**：关系图入口、上下游引用、Evidence 来源路径
 - **人机共用**：人用看板搜索阅读，Agent 用 `query/show/related/overview` 和 `generated/catalog.json`
-- **本地优先**：导入知识仓生成的 `catalog.json`，文件只在浏览器本地读取，不上传
+- **本地优先**：catalog 只在浏览器本地读取，不上传
 
 ```bash
-xdg-open docs/department-dashboard/index.html
+# 1. 生成 catalog.json 和 dashboard.html
+node .department-tools/scripts/team-wiki.js build <知识仓>
+
+# 2. 打开看板（http(s) 下自动读取同目录 catalog.json）
+xdg-open <知识仓>/generated/dashboard.html
 ```
+
+从 `file://` 直接打开时浏览器禁止读取同目录文件，点看板右上角 **导入 catalog.json** 选择 `<知识仓>/generated/catalog.json` 即可；或用任意静态服务器（如 `python3 -m http.server -d <知识仓>/generated`）访问。
 
 ## AI Agent 接口
 
