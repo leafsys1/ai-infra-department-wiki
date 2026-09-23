@@ -126,6 +126,8 @@ const RECORD = (id, title, sources) =>
     "reviewers: []",
     "created: 2026-09-22",
     "updated: 2026-09-22",
+    "areas: [交付复现, 证据]",
+    "tags: [probe, bash -n]",
     "evidence: []",
     "relations: []",
     ...(sources ? [`sources: [${sources.map((s) => `"${s}"`).join(", ")}]`] : []),
@@ -223,6 +225,10 @@ describe("knowledge dashboard", () => {
           assert.equal(String(element("navTotal").textContent), String(catalog.record_count));
           assert.ok(element("recordList").innerHTML.includes("Dashboard render probe"));
           assert.equal((element("graphWrap").innerHTML.match(/data-node="/g) || []).length, catalog.record_count);
+          // `areas`/`tags` are the catalog's field names; a page reading `area`/`model_family`
+          // shows "未分类" and an empty pill row for every record.
+          assert.ok(element("recordList").innerHTML.includes("交付复现"), "the card must show the record's areas");
+          assert.doesNotMatch(element("recordList").innerHTML, /未分类/, "a record with areas must not read 未分类");
 
           // Clicking a record opens its body, and its sources are clickable only when allowed.
           const first = registry.get("record").find((b) => b.dataset.record === "PAT-2026-9001");
