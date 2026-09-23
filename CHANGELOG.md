@@ -1,5 +1,16 @@
 # Changelog
 
+## ai-infra-department-wiki v0.3.0 (unreleased)
+
+### New
+
+- Added `scripts/audit-corpus.py`, the corpus gate a bulk import needs and `validate` cannot provide: it re-checks every evidence record's `source_sha256` against the frozen artifact its `locator` points at, checks that every number a case quotes appears in that case's own excerpt, scans **records and artifacts** for addresses, host ids and home paths (`validate` scans records only — artifacts are where imports leak), and checks that a pattern's prose names the same cases its relations point at. `--strict` fails on the excerpt-coverage warnings.
+- Added `references/corpus-import.md`: the admission test for importing an existing corpus (one record per mechanism, not per document), evidence binding for material whose source a reader cannot reach, the status conventions that keep `observed` and `verified` honest, and the pre-commit checklist.
+
+### Changed
+
+- The dashboard's record list now breaks ties on type and id when dates are equal, so a corpus that shares one `updated` date reads grouped by type instead of in file order.
+
 ## v3.7.0 (2026-09-21)
 
 ### New

@@ -147,7 +147,7 @@ describe("knowledge repository scaffolding", () => {
     const manifest = JSON.parse(fs.readFileSync(path.join(repo, TOOLS_MANIFEST), "utf8"));
 
     assert.equal(manifest.skill_name, "ai-infra-department-wiki");
-    assert.equal(Object.keys(manifest.files).length, 18);
+    assert.equal(Object.keys(manifest.files).length, 19);
     assert.ok(Object.keys(manifest.files).includes("scripts/lib/query.js"));
     assert.ok(Object.keys(manifest.files).includes("assets/dashboard/index.html"));
     assert.ok(Object.keys(manifest.files).every((file) => /^(scripts|templates|assets)\//.test(file)));

@@ -1,7 +1,7 @@
 ---
 name: ai-infra-department-wiki
 description: Use when a team captures, reviews, syncs, queries, or evolves shared AI Infra knowledge. Enforces evidence, applicability, redaction, Git review, and held-out Skill gates.
-version: 0.2.0
+version: 0.3.0
 author: leafsys1
 license: MIT
 platforms: [linux, macos, windows]
@@ -36,6 +36,7 @@ Before any department operation:
 5. For the shared repository model and onboarding, read `references/knowledge-repo-governance.md`.
 6. For Pattern-to-Skill work, read `references/wikiskill-comparison.md`.
 7. For inference validation, customer delivery, and QA-package ingestion, read `references/inference-delivery-qa-bridge.md` and load the sibling `inference-delivery-qa` Skill.
+8. Before importing an existing corpus (archived experiment logs, a tuning index, a delivery workspace), read `references/corpus-import.md`.
 
 Resolve paths relative to this `SKILL.md` directory. The support files are installed beside the Skill.
 
@@ -125,6 +126,11 @@ stays `ok=true`.
 
 ### Open The Dashboard
 
+`python3 scripts/audit-corpus.py <repo> [--strict]` is the import gate: it checks every evidence hash
+against its frozen artifact, that every number a case quotes appears in its own excerpt, that records
+**and artifacts** are free of addresses, host ids and home paths, and that a pattern's prose names the
+cases its relations point at. `validate` cannot see any of those.
+
 `build` copies the shipped single-file dashboard (`assets/dashboard/index.html`) to
 `<repo>/generated/dashboard.html`, next to the `catalog.json` it renders. There is no server and no
 build step.
@@ -211,6 +217,7 @@ scripts/lib/policy.js
 scripts/lib/scaffold.js
 scripts/lib/publish.js
 scripts/lib/skill-gate.js
+scripts/audit-corpus.py
 scripts/schemas/record.schema.json
 scripts/schemas/relation.schema.json
 scripts/schemas/skill-gate.schema.json
@@ -228,6 +235,7 @@ references/review-policy.md
 references/security-and-redaction.md
 references/wikiskill-comparison.md
 references/inference-delivery-qa-bridge.md
+references/corpus-import.md
 assets/dashboard/index.html
 ```
 
