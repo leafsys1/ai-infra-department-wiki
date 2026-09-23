@@ -3,6 +3,7 @@ schema_version: 1
 id: EVD-YYYY-NNNN
 type: evidence
 title: ""
+summary: ""
 status: draft
 visibility: internal
 owners: []

@@ -47,6 +47,16 @@ hermes skills install https://raw.githubusercontent.com/leafsys1/ai-infra-depart
 
 一条重要结论不应只有一份 Markdown。Case 应通过关系引用 Evidence；客户交付应同时记录交付物、运行方式和验收证据；Pattern 只有通过 held-out Skill gate 才能升级为可复用 Skill。
 
+## 看板预览
+
+![部门知识图谱预览](assets/graph-preview.png)
+
+上图由知识仓自己的构建产物渲染：`scripts/render-graph-assets.py <知识仓>` 读取 `generated/graph-data.json`（关系）和 `generated/catalog.json`（标题与类型），用看板同一套配色和关系标签绘制，所以它只可能显示该知识仓当前的内容。同一条命令还会输出一段动画（关系逐条画出的过程，再按顺序走一遍记录）：
+
+![关系逐条画出的动画](assets/graph-demo.gif)
+
+本机没有浏览器，因此这两张图是**数据渲染图**，不是页面截图；看板本身（`generated/dashboard.html`）在 `http(s)://` 下打开即可交互浏览。
+
 ## 工作流
 
 ### 建仓和固定工具链

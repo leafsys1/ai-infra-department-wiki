@@ -3,6 +3,7 @@ schema_version: 1
 id: CASE-YYYY-NNNN
 type: case
 title: ""
+summary: ""
 status: draft
 visibility: internal
 owners: []

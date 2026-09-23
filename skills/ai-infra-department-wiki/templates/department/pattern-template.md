@@ -3,6 +3,7 @@ schema_version: 1
 id: PAT-YYYY-NNNN
 type: pattern
 title: ""
+summary: ""
 status: proposed
 visibility: internal
 owners: []

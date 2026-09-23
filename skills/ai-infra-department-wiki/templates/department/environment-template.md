@@ -3,6 +3,7 @@ schema_version: 1
 id: ENV-NAME
 type: environment
 title: ""
+summary: ""
 status: observed
 visibility: internal
 owners: []

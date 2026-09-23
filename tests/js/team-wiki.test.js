@@ -295,6 +295,7 @@ describe("department knowledge repository", () => {
     assert.equal(result.status, 0, result.stderr);
     const draft = fs.readFileSync(path.join(repo, "drafts/CASE-2026-0002.md"), "utf8");
     assert.match(draft, /id: CASE-2026-0002/);
+    assert.match(draft, /summary: ""/, "the template must ask for the one-sentence summary the cards read");
     assert.match(draft, /context:/);
     assert.match(draft, /validation:/);
     assert.match(draft, /## Applicability And Risks/);

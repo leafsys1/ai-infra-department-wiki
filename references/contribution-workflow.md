@@ -22,6 +22,85 @@ Fill unknown facts as `unknown`; never guess model, hardware, framework, topolog
 validation data. A draft stays out of `records/` until a human moves the finished record there —
 nothing under `drafts/` is visible to anyone else.
 
+## From A Working Session To A Record
+
+The session is where the evidence is; the record is what survives it. One record per **mechanism**,
+not per session — a session that fixed three unrelated things produces three records or none.
+
+### Capture when, skip when
+
+Capture a session when it produced something a colleague would otherwise re-derive: a failure mode
+with its trigger, a probe that misleads, a decision with its trade-off, an acceptance criterion, an
+environment constraint that a conclusion depends on.
+
+Skip it when the session only executed an existing runbook (unless the runbook turned out to be
+wrong), when the content is task status ("pushed the branch"), when it is a one-off value (a path, a
+port, a credential), or when the session did not actually observe the thing — an assumption is not a
+record. **Query before writing** (`query <repo> <terms>`): a second record about the same mechanism
+becomes a `supports`/`refutes` relation, not a duplicate.
+
+### Pick the type by what you learned, not by what you did
+
+| What you learned | Type |
+| --- | --- |
+| Something happened, with a before and an after | `case` (+ the evidence it cites) |
+| A measurement or command output you can point at | `evidence` |
+| A choice, its reason, and what it gave up | `decision` |
+| A rule that held in more than one situation | `pattern` |
+| Steps someone else must execute or roll back | `runbook` |
+| A constraint the conclusion depends on | `environment` |
+
+### Title and summary carry the record
+
+- **Title** is the conclusion as a claim, not a topic: "同名镜像 tag 不等于同一构建" rather than
+  "镜像问题". A reader scanning the list should get the finding, not the subject area.
+- **Summary** is one sentence: the takeaway that lets a reader decide whether to open the record. No
+  new facts, no number that is not in the body.
+- Never leave `summary` empty. The catalog falls back to a body excerpt, so the card renders heading
+  soup (`Title Goal Baseline …`) instead of the conclusion — that is the single most common reason a
+  knowledge list reads as noise.
+- Fill `areas` and `tags`. They drive the facets, the card meta line and search; an empty pair makes
+  the record findable only by title.
+
+### Keep the causal chain reconstructible
+
+The template sections are the causal skeleton, and they exist to be filled in this order:
+
+`Baseline` (what was true) → `Changed Variable` (what changed) → `Procedure` (what you ran) →
+`Results` (what was observed) → `Conclusion` (what follows) — with `Preconditions` /
+`When Not To Apply` / `Applicability And Risks` marking where the claim stops holding.
+
+A reader who did not run the session must be able to reconstruct that chain without it. So:
+
+- State the environment and the command next to every number; a number without its measurement is
+  not evidence.
+- Write the boundary, not just the win: what would falsify the claim, and when the pattern does not
+  apply.
+- Keep one mechanism per record. If the record needs "and also", it is two records.
+- `unknown` beats a plausible guess, every time.
+
+### Bind evidence to something frozen
+
+An evidence record binds a generated artifact by `source_sha256` + `locator`. Generate that artifact
+with a script that refuses to overwrite an existing log, then update the hash in the same change.
+Never bind a live query, a dashboard, or a log whose bytes change between runs: the binding breaks
+silently and the claim loses its evidence.
+
+### Readability gate, before you publish
+
+Ask of the finished record:
+
+1. Can a colleague state, after one read, what was true before, what changed, what was observed, and
+   what to do differently?
+2. Do title + summary + areas + tags decide relevance without opening the record?
+3. Does every claim either cite evidence in this repository or say plainly that it is not yet
+   verified (`observed`, not `verified`)?
+4. Does the record say where it stops applying?
+5. Is it about one mechanism?
+
+Any "no" is an edit, not a footnote. A mechanically valid record that fails these is still a bad
+record — `validate` cannot see the difference.
+
 ## Validate
 
 Run `validate` before moving a record into `records/` and again before publishing. It enforces the

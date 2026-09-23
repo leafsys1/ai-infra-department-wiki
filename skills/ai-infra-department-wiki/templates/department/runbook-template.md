@@ -3,6 +3,7 @@ schema_version: 1
 id: RUN-YYYY-NNNN
 type: runbook
 title: ""
+summary: ""
 status: draft
 visibility: internal
 owners: []

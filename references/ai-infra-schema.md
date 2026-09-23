@@ -41,9 +41,12 @@ review.
 
 ## Searchable Fields
 
-The retrieval index reads these without opening the record, so fill them in: `areas`, `tags`, and the
-case `context` block (workload, model family, model version, framework, framework version, accelerator
-model, precision), plus `owners`. An empty `areas`/`tags` list makes a record findable only by title.
+The retrieval index reads these without opening the record, so fill them in: `summary`, `areas`,
+`tags`, and the case `context` block (workload, model family, model version, framework, framework
+version, accelerator model, precision), plus `owners`. `summary` is one sentence — the takeaway a
+reader uses to decide whether to open the record. An empty `areas`/`tags` list makes a record
+findable only by title, and an empty `summary` makes the dashboard card render a body excerpt
+(heading soup) instead of a conclusion.
 
 ## Lifecycle
 

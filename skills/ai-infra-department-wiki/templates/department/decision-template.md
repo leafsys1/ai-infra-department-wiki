@@ -3,6 +3,7 @@ schema_version: 1
 id: DEC-YYYY-NNNN
 type: decision
 title: ""
+summary: ""
 status: proposed
 visibility: internal
 owners: []
