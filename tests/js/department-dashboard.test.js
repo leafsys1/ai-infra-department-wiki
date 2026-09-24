@@ -201,6 +201,11 @@ describe("knowledge dashboard", () => {
     for (const feature of ["renderRecords", "renderGraph", "markdown", "showRecord", "load", "filtered", "openSource", "sourcesOf"]) {
       assert.ok(html.includes(`function ${feature}`), `missing ${feature}`);
     }
+    assert.match(html, /table-scroll/, "Markdown tables must render as scrollable HTML tables");
+    assert.match(html, /language-\$\{esc\(lang\)\}/, "fenced code blocks must preserve language classes");
+    assert.match(html, /class=\"mindmap\"/, "Mermaid mindmap blocks must render as readable mindmaps");
+    assert.match(html, /source-footer/, "external records must have an original-document footer");
+    assert.match(html, /在空白处拖动整张图谱/, "graph instructions must explain background panning");
     assert.doesNotMatch(scriptOf(html), /\brequire\(/, "the page must stay dependency-free");
   });
 
@@ -244,8 +249,8 @@ describe("knowledge dashboard", () => {
 
           const unsafe = registry.get("record").find((b) => b.dataset.record === "PAT-2026-9002");
           unsafe.click();
-          assert.ok(element("detail").innerHTML.includes('data-source="blocked"'), "a javascript: source must not become a link");
-          registry.get("source").find((b) => b.dataset.source === "blocked").click();
+          assert.ok(element("detail").innerHTML.includes('暂无可核验的公开源文档地址'), "unsafe source must not become a link");
+          assert.ok(!element("detail").innerHTML.includes('data-source="javascript:'), "unsafe scheme must not be exposed");
           assert.deepEqual(opened, ["https://example.com/spec"], "a blocked source must never be opened");
 
           // Filtering really filters.
