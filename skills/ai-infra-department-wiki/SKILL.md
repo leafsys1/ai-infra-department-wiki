@@ -237,7 +237,129 @@ references/wikiskill-comparison.md
 references/inference-delivery-qa-bridge.md
 references/corpus-import.md
 assets/dashboard/index.html
+examples/knowledge-repo/.department-redaction.json
+examples/knowledge-repo/.department-wiki.json
+examples/knowledge-repo/README.md
+examples/knowledge-repo/generated/.gitkeep
+examples/knowledge-repo/generated/catalog.json
+examples/knowledge-repo/generated/dashboard.html
+examples/knowledge-repo/generated/graph-data.json
+examples/knowledge-repo/generated/health-report.json
+examples/knowledge-repo/generated/index.md
+examples/knowledge-repo/generated/overview.md
+examples/knowledge-repo/records/cases/communication/.gitkeep
+examples/knowledge-repo/records/cases/deployment/.gitkeep
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0001.md
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0002.md
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0004.md
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0005.md
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0040.md
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0041.md
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0042.md
+examples/knowledge-repo/records/cases/deployment/CASE-2026-0043.md
+examples/knowledge-repo/records/cases/incidents/.gitkeep
+examples/knowledge-repo/records/cases/inference/.gitkeep
+examples/knowledge-repo/records/cases/inference/CASE-2026-0010.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0011.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0012.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0013.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0014.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0020.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0021.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0022.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0023.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0024.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0030.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0031.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0032.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0033.md
+examples/knowledge-repo/records/cases/inference/CASE-2026-0034.md
+examples/knowledge-repo/records/cases/training/.gitkeep
+examples/knowledge-repo/records/decisions/.gitkeep
+examples/knowledge-repo/records/decisions/DEC-2026-0001.md
+examples/knowledge-repo/records/decisions/DEC-2026-0010.md
+examples/knowledge-repo/records/decisions/DEC-2026-0020.md
+examples/knowledge-repo/records/environments/.gitkeep
+examples/knowledge-repo/records/environments/ENV-2026-0001.md
+examples/knowledge-repo/records/environments/ENV-2026-0010.md
+examples/knowledge-repo/records/evidence/.gitkeep
+examples/knowledge-repo/records/evidence/EVD-2026-0001.md
+examples/knowledge-repo/records/evidence/EVD-2026-0002.md
+examples/knowledge-repo/records/evidence/EVD-2026-0003.md
+examples/knowledge-repo/records/evidence/EVD-2026-0004.md
+examples/knowledge-repo/records/evidence/EVD-2026-0010.md
+examples/knowledge-repo/records/evidence/EVD-2026-0011.md
+examples/knowledge-repo/records/evidence/EVD-2026-0012.md
+examples/knowledge-repo/records/evidence/EVD-2026-0013.md
+examples/knowledge-repo/records/evidence/EVD-2026-0014.md
+examples/knowledge-repo/records/evidence/EVD-2026-0020.md
+examples/knowledge-repo/records/evidence/EVD-2026-0021.md
+examples/knowledge-repo/records/evidence/EVD-2026-0022.md
+examples/knowledge-repo/records/evidence/EVD-2026-0023.md
+examples/knowledge-repo/records/evidence/EVD-2026-0024.md
+examples/knowledge-repo/records/evidence/EVD-2026-0030.md
+examples/knowledge-repo/records/evidence/EVD-2026-0031.md
+examples/knowledge-repo/records/evidence/EVD-2026-0032.md
+examples/knowledge-repo/records/evidence/EVD-2026-0033.md
+examples/knowledge-repo/records/evidence/EVD-2026-0034.md
+examples/knowledge-repo/records/evidence/EVD-2026-0040.md
+examples/knowledge-repo/records/evidence/EVD-2026-0041.md
+examples/knowledge-repo/records/evidence/EVD-2026-0042.md
+examples/knowledge-repo/records/evidence/EVD-2026-0043.md
+examples/knowledge-repo/records/patterns/.gitkeep
+examples/knowledge-repo/records/patterns/PAT-2026-0001.md
+examples/knowledge-repo/records/patterns/PAT-2026-0002.md
+examples/knowledge-repo/records/patterns/PAT-2026-0003.md
+examples/knowledge-repo/records/patterns/PAT-2026-0004.md
+examples/knowledge-repo/records/patterns/PAT-2026-0005.md
+examples/knowledge-repo/records/patterns/PAT-2026-0010.md
+examples/knowledge-repo/records/patterns/PAT-2026-0011.md
+examples/knowledge-repo/records/patterns/PAT-2026-0012.md
+examples/knowledge-repo/records/patterns/PAT-2026-0013.md
+examples/knowledge-repo/records/patterns/PAT-2026-0014.md
+examples/knowledge-repo/records/patterns/PAT-2026-0015.md
+examples/knowledge-repo/records/patterns/PAT-2026-0016.md
+examples/knowledge-repo/records/patterns/PAT-2026-0017.md
+examples/knowledge-repo/records/patterns/PAT-2026-0018.md
+examples/knowledge-repo/records/patterns/PAT-2026-0020.md
+examples/knowledge-repo/records/patterns/PAT-2026-0021.md
+examples/knowledge-repo/records/runbooks/.gitkeep
+examples/knowledge-repo/records/runbooks/RUN-2026-0001.md
+examples/knowledge-repo/records/runbooks/RUN-2026-0010.md
+examples/knowledge-repo/records/runbooks/RUN-2026-0011.md
+examples/knowledge-repo/records/runbooks/RUN-2026-0012.md
 ```
+
+The repository's reviewed knowledge snapshot is also shipped with the Skill. It is the organization asset,
+not a local-only cache:
+
+```text
+examples/knowledge-repo/README.md
+examples/knowledge-repo/records/...
+examples/knowledge-repo/generated/catalog.json
+examples/knowledge-repo/generated/graph-data.json
+```
+
+After installation, `team-wiki query examples/knowledge-repo ...` works without any path on the original
+author's machine. A colleague may clone a newer department knowledge repository separately and use the same
+commands against that repository; the packaged snapshot remains the portable baseline.
+
+## Bundled organization knowledge
+
+The `examples/knowledge-repo/` directory is not a tutorial placeholder. It is the versioned organization
+knowledge snapshot shipped with this Skill. It contains the reviewed Markdown records, source provenance,
+relations, and generated retrieval artifacts. Agents should query it first when answering AI Infra questions:
+
+```bash
+node scripts/team-wiki.js query examples/knowledge-repo <terms...>
+node scripts/team-wiki.js show examples/knowledge-repo <RECORD-ID>
+node scripts/team-wiki.js related examples/knowledge-repo <RECORD-ID>
+```
+
+When a newer shared knowledge repository is available, run the same commands against that clone. Do not
+silently fall back to a local absolute path such as `/home/...`; the bundled snapshot must remain usable
+on every colleague's machine after a GitHub Skill install.
+
 
 If a command fails with `Cannot find module './lib/…'` or `department template missing`, the
 installation is incomplete: reinstall the whole Skill directory rather than copying individual files.

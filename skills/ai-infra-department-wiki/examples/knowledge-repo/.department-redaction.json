@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "_comment": "Department redaction rules. Committed with the knowledge repository so every colleague inherits them. Edit block/warn/allow below; 'examples' is ignored by the tool.",
+  "block": [
+    {
+      "name": "customer_or_project_codename",
+      "pattern": "REPLACE-WITH-INTERNAL-CODEWORD",
+      "flags": "i"
+    }
+  ],
+  "warn": [
+    {
+      "name": "internal_ticket_prefix",
+      "pattern": "\\b(?:JIRA|ISSUE|TICKET)-\\d+",
+      "flags": "i"
+    },
+    {
+      "name": "numeric_host_id",
+      "pattern": "(?<![\\w.-])(?:60006|60007)(?![\\w.-])",
+      "flags": ""
+    },
+    {
+      "name": "internal_repo_name",
+      "pattern": "(?:comp_mig|hzj-|yxy-)",
+      "flags": ""
+    }
+  ],
+  "allow": [
+    {
+      "name": "public_demo_host",
+      "pattern": "example\\.invalid"
+    }
+  ],
+  "disable_builtin": [],
+  "examples": {
+    "numeric_host_id": {
+      "name": "numeric_host_id",
+      "pattern": "(?<![\\w.-])(?:60006|60007)(?![\\w.-])",
+      "flags": "",
+      "note": "Bare unit numbers cannot be told apart from ordinary quantities (16384, 65536), so they are not a built-in rule. Copy this into warn/block and list your own units."
+    },
+    "customer_name": {
+      "name": "customer_name",
+      "pattern": "某客户|某部门",
+      "flags": "",
+      "note": "Prefer codewords and generic nouns in shared records; use block when a real name must never appear."
+    }
+  }
+}

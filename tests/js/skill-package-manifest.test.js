@@ -41,7 +41,7 @@ function manifestFromSkillFile(source) {
 /** Files the CLI cannot start or cannot complete a command without. */
 function requiredFiles() {
   const required = [];
-  for (const directory of ["scripts", "templates"]) {
+  for (const directory of ["scripts", "templates", "examples"]) {
     for (const relative of listFiles(path.join(SKILL, directory))) required.push(`${directory}/${relative}`);
   }
   // Every module in the require() graph of the CLI entry point.

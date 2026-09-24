@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "generated_at": null,
+  "records": 71,
+  "errors": 0,
+  "warnings": 0,
+  "tool_version": "0.3.0",
+  "policy_file": ".department-redaction.json",
+  "policy_rules": 12,
+  "sha256": "a9727c53c1dd886ac9a082985605dbdc06012d7372305c92e6dc5cb0b6826192"
+}

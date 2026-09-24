@@ -1,0 +1,1731 @@
+{
+  "schema_version": 1,
+  "nodes": [
+    {
+      "id": "CASE-2026-0001",
+      "label": "生成的交付脚本必须通过 bash -n 门禁",
+      "path": "records/cases/deployment/CASE-2026-0001.md",
+      "status": "verified",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付脚本质量"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0002",
+      "label": "权重存在性判定必须使用 api/models，不能用 resolve 路径",
+      "path": "records/cases/deployment/CASE-2026-0002.md",
+      "status": "verified",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "下载通路",
+        "权重获取"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0004",
+      "label": "面向人的知识看板必须随 Skill 分发并经 HTTP 可直接访问",
+      "path": "records/cases/deployment/CASE-2026-0004.md",
+      "status": "verified",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "分发",
+        "知识看板"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0005",
+      "label": "单文件页面读取产物里不存在的字段时会静默降级",
+      "path": "records/cases/deployment/CASE-2026-0005.md",
+      "status": "verified",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "字段契约",
+        "知识看板"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0010",
+      "label": "scatter_nd_update_sk 最小 backport：端到端 6/6 为正，但逐毫秒归因只到 partially-supported",
+      "path": "records/cases/inference/CASE-2026-0010.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "性能调优",
+        "服务化 TTFT",
+        "算子替换"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0011",
+      "label": "DSA-CP A2 prefill：把完整 o-proj 权重收集前移，用 attention 主链覆盖通信",
+      "path": "records/cases/inference/CASE-2026-0011.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "prefill",
+        "性能调优",
+        "通信重叠"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0012",
+      "label": "FlashComm1 DP2 严格 identity 布局下跳过 prefill 的大 tensor copy",
+      "path": "records/cases/inference/CASE-2026-0012.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "prefill",
+        "性能调优",
+        "通信优化"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0013",
+      "label": "线性注意力因果卷积权重改为加载时转置：解码每步少 384 次 Transpose kernel",
+      "path": "records/cases/inference/CASE-2026-0013.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "性能调优",
+        "权重布局",
+        "解码"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0014",
+      "label": "单 token 解码的 QKV 拼接改为视图：每步少 384 次拼接 kernel",
+      "path": "records/cases/inference/CASE-2026-0014.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "张量视图",
+        "性能调优",
+        "解码"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0020",
+      "label": "Qwen3.8-27B W8A8 单 die 解码：每步 28.427 GB 权重读取已贴住 HBM 带宽上限",
+      "path": "records/cases/inference/CASE-2026-0020.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "带宽定标",
+        "推理性能"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0021",
+      "label": "同样 4 个 die：1 个 TP4 实例与 4 个 TP1 副本的形态对比",
+      "path": "records/cases/inference/CASE-2026-0021.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "部署形态"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0022",
+      "label": "DSv4-Flash DSpark 的 draft 长度与 token 预算共用一个池：B/D 两臂的长提示收益",
+      "path": "records/cases/inference/CASE-2026-0022.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "预算配置"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0023",
+      "label": "Qwen3.8-27B GDN chunked-prefill metadata 的 exact-shape 缓存：机制命中成立、端到端收益落在噪声内",
+      "path": "records/cases/inference/CASE-2026-0023.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "机制定标"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0024",
+      "label": "DSv4-Flash 单实例 prefix caching 命中链不可用：同串重复请求命中恒为 0",
+      "path": "records/cases/inference/CASE-2026-0024.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "机制定标"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0030",
+      "label": "R0007 DSA-CP drafting metadata 跨 KV-cache group 复用：局部 −27.7% 但同会话正式吞吐 −5.67%/−6.47% → REVERT",
+      "path": "records/cases/inference/CASE-2026-0030.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "否证归档",
+        "投机解码",
+        "推理性能"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0031",
+      "label": "R0038 DSpark copy-and-expand grid-stride：单算子 5.55–6.07× 但冻结同会话 4 对吞吐全部负向 → REVERT",
+      "path": "records/cases/inference/CASE-2026-0031.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "否证归档",
+        "推理性能",
+        "算子优化"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0032",
+      "label": "R0050 KV 池后端 mooncake→memcache+device_rdma：主指标 −48.497% 达标但每臂 5 单元未达 → 收益 UNVERIFIED",
+      "path": "records/cases/inference/CASE-2026-0032.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "KV 缓存池",
+        "推理性能",
+        "验收口径"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0033",
+      "label": "R0056 两条零卡静态否证：本引擎无 multi-step 旋钮 / 补齐 decode 图捕获覆盖 248→256 无收益对象",
+      "path": "records/cases/inference/CASE-2026-0033.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "调度",
+        "零卡静态否证"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0034",
+      "label": "R0055 显式 compile 范围被静默丢弃 + iteration_tokens_total 指标语义闭证",
+      "path": "records/cases/inference/CASE-2026-0034.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "编译与指标口径",
+        "零卡静态闭证"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0040",
+      "label": "客户自理复现暴露的四类交付缺口：设备权限、镜像、权重与依赖",
+      "path": "records/cases/deployment/CASE-2026-0040.md",
+      "status": "verified",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付脚本质量",
+        "环境"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0041",
+      "label": "单一基础镜像 + 每模型最小文件的交付形态",
+      "path": "records/cases/deployment/CASE-2026-0041.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付形态",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0042",
+      "label": "三个架构家族复用同一条六步适配流水线，零代码改动",
+      "path": "records/cases/deployment/CASE-2026-0042.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "模型适配",
+        "验收"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "CASE-2026-0043",
+      "label": "同一份交付包在另一台环境复现失败：同名镜像 tag 不是同一构建",
+      "path": "records/cases/deployment/CASE-2026-0043.md",
+      "status": "observed",
+      "type": "case",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "环境"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "DEC-2026-0001",
+      "label": "客户版材料的边界与术语统一",
+      "path": "records/decisions/DEC-2026-0001.md",
+      "status": "verified",
+      "type": "decision",
+      "visibility": "internal",
+      "areas": [
+        "客户交付",
+        "术语规范"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "DEC-2026-0010",
+      "label": "结论状态纪律：KEEP / scoped KEEP / CONTINUE / REVERT / NOT_APPLICABLE / UNVERIFIED",
+      "path": "records/decisions/DEC-2026-0010.md",
+      "status": "observed",
+      "type": "decision",
+      "visibility": "internal",
+      "areas": [
+        "收益判定",
+        "记录纪律"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "DEC-2026-0020",
+      "label": "交付验收标准：客户在陌生环境仅凭交付物即可复现",
+      "path": "records/decisions/DEC-2026-0020.md",
+      "status": "observed",
+      "type": "decision",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "验收"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "ENV-2026-0001",
+      "label": "910B2C 单机 16 卡：每卡单 die、机内两个 8 卡域",
+      "path": "records/environments/ENV-2026-0001.md",
+      "status": "observed",
+      "type": "environment",
+      "visibility": "internal",
+      "areas": [
+        "910B",
+        "硬件环境"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "ENV-2026-0010",
+      "label": "perf-lab 的两个实测环境：910B3 八卡 W4A8 长上下文与 910C/A3 逻辑 die 短服务",
+      "path": "records/environments/ENV-2026-0010.md",
+      "status": "observed",
+      "type": "environment",
+      "visibility": "internal",
+      "areas": [
+        "910B",
+        "910C",
+        "硬件环境"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0001",
+      "label": "bash -n 门禁在错误引号写法上失败、在修正写法上通过的实测输出",
+      "path": "records/evidence/EVD-2026-0001.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0002",
+      "label": "权重存在性探测：api/models 与 resolve/main 的实测状态码对比",
+      "path": "records/evidence/EVD-2026-0002.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "权重获取",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0003",
+      "label": "看板分发与 HTTP 访问通路的实测输出",
+      "path": "records/evidence/EVD-2026-0003.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "知识看板",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0004",
+      "label": "看板字段契约检查的冻结输出：页面读取的字段名与产物实际字段的比对",
+      "path": "records/evidence/EVD-2026-0004.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "知识看板",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0010",
+      "label": "R0017 关键数字的冻结摘录：三口径倍数、噪声地板与两轮反序短服务 A/B",
+      "path": "records/evidence/EVD-2026-0010.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "性能调优",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0011",
+      "label": "R0029 关键数字的冻结摘录：夹心 A/B/A 的 6/6 正向与 Level 3 通信字节量",
+      "path": "records/evidence/EVD-2026-0011.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "性能调优",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0012",
+      "label": "R0032 关键数字的冻结摘录：两轮同会话冷 32K A/B 的 8/8 正向",
+      "path": "records/evidence/EVD-2026-0012.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "性能调优",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0013",
+      "label": "R0043 关键数字的冻结摘录：384 次 Transpose 归零与成对 TPOT 改善",
+      "path": "records/evidence/EVD-2026-0013.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "性能调优",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0014",
+      "label": "R0044 关键数字的冻结摘录：384 次拼接归零与成对 TPOT 改善",
+      "path": "records/evidence/EVD-2026-0014.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "性能调优",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0020",
+      "label": "R0046 解码权重流量账目与单 die HBM 带宽上限的实测输出",
+      "path": "records/evidence/EVD-2026-0020.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "带宽定标",
+        "推理性能",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0021",
+      "label": "R0048 同 4 die 上 1×TP4 与 4×TP1 副本的形态对比实测输出",
+      "path": "records/evidence/EVD-2026-0021.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "证据",
+        "部署形态"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0022",
+      "label": "R0059 DSpark 预算池实测输出：可调度 token 数与配对窗口收益",
+      "path": "records/evidence/EVD-2026-0022.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "证据",
+        "预算配置"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0023",
+      "label": "R0060 GDN exact-shape metadata cache 的逐 rank 计数与端到端噪声内输出",
+      "path": "records/evidence/EVD-2026-0023.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "机制定标",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0024",
+      "label": "R0057 单实例同 prompt 重复请求的 prefix cache 计数器增量（命中恒为 0）",
+      "path": "records/evidence/EVD-2026-0024.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "推理性能",
+        "机制定标",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0030",
+      "label": "R0007 DSA-CP drafting metadata 跨 KV-cache group 复用的端到端反降摘录",
+      "path": "records/evidence/EVD-2026-0030.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "否证归档",
+        "投机解码",
+        "推理性能"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0031",
+      "label": "R0038 DSpark copy-and-expand grid-stride：单算子 5.55–6.07× 与冻结同会话 4 对负向的并存摘录",
+      "path": "records/evidence/EVD-2026-0031.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "否证归档",
+        "推理性能",
+        "算子优化"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0032",
+      "label": "R0050 KV 池后端换 memcache+device_rdma 的验收摘录：主指标通过而收益仍判 UNVERIFIED",
+      "path": "records/evidence/EVD-2026-0032.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "KV 缓存池",
+        "推理性能",
+        "验收口径"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0033",
+      "label": "R0056 两条零卡静态否证的判据回显摘录（multi-step 旋钮不存在 / 图捕获覆盖 248→256 无收益对象）",
+      "path": "records/evidence/EVD-2026-0033.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "图捕获",
+        "调度",
+        "零卡静态否证"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0034",
+      "label": "R0055 两条只读闭证摘录：显式 compile 范围被静默丢弃 + iteration_tokens_total 的观测粒度",
+      "path": "records/evidence/EVD-2026-0034.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "指标语义",
+        "编译范围",
+        "零卡静态否证"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0040",
+      "label": "客户自理复现缺陷的冻结摘录：设备权限、CANN 环境、自建镜像、权重路径、缺依赖与空参数",
+      "path": "records/evidence/EVD-2026-0040.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付脚本质量",
+        "环境"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0041",
+      "label": "单一基础镜像交付形态的冻结摘录：交付物清单、每模型三文件、版本锁定与下载脚本",
+      "path": "records/evidence/EVD-2026-0041.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付形态",
+        "证据"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0042",
+      "label": "跨架构家族复用同一流水线的冻结摘录：三模型表、六步流程、分类决策与验收口径",
+      "path": "records/evidence/EVD-2026-0042.md",
+      "status": "verified",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "模型适配",
+        "验收"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "EVD-2026-0043",
+      "label": "同名镜像 tag 跨环境复现事件的冻结摘录：交付文档的摘要字段与容器 CANN 环境要求",
+      "path": "records/evidence/EVD-2026-0043.md",
+      "status": "observed",
+      "type": "evidence",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "环境"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0001",
+      "label": "容器内下载段的引号嵌套会截断整份交付脚本",
+      "path": "records/patterns/PAT-2026-0001.md",
+      "status": "verified",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付脚本质量"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0002",
+      "label": "下载前探测：api/models 是存在性判据，resolve 不是",
+      "path": "records/patterns/PAT-2026-0002.md",
+      "status": "verified",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "下载通路",
+        "权重获取"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0003",
+      "label": "同名镜像 tag 不等于同一构建：跨环境前必须比对 digest",
+      "path": "records/patterns/PAT-2026-0003.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "镜像管理"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0004",
+      "label": "代码内嵌镜像型交付物：保留交付镜像并给足权限",
+      "path": "records/patterns/PAT-2026-0004.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "镜像管理"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0005",
+      "label": "重写面向人的页面，必须对照文档承诺的能力清单逐条验证",
+      "path": "records/patterns/PAT-2026-0005.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "文档契约",
+        "知识看板"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0010",
+      "label": "局部收益不等于端到端收益：实现之前先算该链的理想上界",
+      "path": "records/patterns/PAT-2026-0010.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "性能优化",
+        "收益判定"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0011",
+      "label": "判据没有判别力时，既不能写「有收益」也不能写「无收益」",
+      "path": "records/patterns/PAT-2026-0011.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "收益判定",
+        "统计口径"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0012",
+      "label": "机制存在性先于机制优化：能用零卡静态证据否掉的方向不要占卡去试",
+      "path": "records/patterns/PAT-2026-0012.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "优化方向筛选",
+        "零卡验证"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0013",
+      "label": "倍数读数必须先扣除仪器地板",
+      "path": "records/patterns/PAT-2026-0013.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "口径标定",
+        "性能测量"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0014",
+      "label": "「能跑」必须证明来自候选：产物同一性 + 运行时加载 + 负控制",
+      "path": "records/patterns/PAT-2026-0014.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "交付验证",
+        "产物同一性"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0015",
+      "label": "解码步常常先被权重读取带宽卡住，先量带宽再调算子",
+      "path": "records/patterns/PAT-2026-0015.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "带宽分析",
+        "推理性能"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0016",
+      "label": "同样卡数下「单实例大 TP」与「多副本小 TP」是两种产品形态，先定指标再选拓扑",
+      "path": "records/patterns/PAT-2026-0016.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "服务化指标",
+        "部署拓扑"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0017",
+      "label": "host 下发/胶水常常比设备算子本身更贵：先量 host:device 比例",
+      "path": "records/patterns/PAT-2026-0017.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "host 开销",
+        "性能归因"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0018",
+      "label": "显式配置可能被静默丢弃：设了不等于生效，必须回读生效值",
+      "path": "records/patterns/PAT-2026-0018.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "起服校验",
+        "配置生效性"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0020",
+      "label": "交付物必须客户自理：依赖我方环境的交付物在验收时判 FAIL",
+      "path": "records/patterns/PAT-2026-0020.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付脚本质量",
+        "验收"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "PAT-2026-0021",
+      "label": "权重获取要有双通道与存在性判据：hf-mirror 直连 + 备用源，元信息走 api/models",
+      "path": "records/patterns/PAT-2026-0021.md",
+      "status": "observed",
+      "type": "pattern",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "权重获取"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "RUN-2026-0001",
+      "label": "跨环境交付复现的标准流程",
+      "path": "records/runbooks/RUN-2026-0001.md",
+      "status": "verified",
+      "type": "runbook",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "运行手册"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "RUN-2026-0010",
+      "label": "性能实验与收益判定流程：从预注册判据到判定档",
+      "path": "records/runbooks/RUN-2026-0010.md",
+      "status": "observed",
+      "type": "runbook",
+      "visibility": "internal",
+      "areas": [
+        "性能实验",
+        "收益判定"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "RUN-2026-0011",
+      "label": "零卡静态否证流程：占加速器之前先否掉一个方向",
+      "path": "records/runbooks/RUN-2026-0011.md",
+      "status": "observed",
+      "type": "runbook",
+      "visibility": "internal",
+      "areas": [
+        "优化方向筛选",
+        "零卡验证"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    },
+    {
+      "id": "RUN-2026-0012",
+      "label": "客户自理交付包的打包与验收流程",
+      "path": "records/runbooks/RUN-2026-0012.md",
+      "status": "verified",
+      "type": "runbook",
+      "visibility": "internal",
+      "areas": [
+        "交付复现",
+        "交付脚本质量",
+        "验收"
+      ],
+      "owners": [
+        "ai-infra"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "CASE-2026-0001",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0001"
+    },
+    {
+      "from": "CASE-2026-0001",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0001"
+    },
+    {
+      "from": "CASE-2026-0002",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0002"
+    },
+    {
+      "from": "CASE-2026-0002",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0002"
+    },
+    {
+      "from": "CASE-2026-0004",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0003"
+    },
+    {
+      "from": "CASE-2026-0004",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0003"
+    },
+    {
+      "from": "CASE-2026-0005",
+      "relation_type": "applies_to",
+      "to": "CASE-2026-0004"
+    },
+    {
+      "from": "CASE-2026-0005",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0004"
+    },
+    {
+      "from": "CASE-2026-0005",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0004"
+    },
+    {
+      "from": "CASE-2026-0010",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0010",
+      "relation_type": "mitigated_by",
+      "to": "RUN-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0010",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0010",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0011",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0011"
+    },
+    {
+      "from": "CASE-2026-0011",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0011",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0011"
+    },
+    {
+      "from": "CASE-2026-0012",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0012"
+    },
+    {
+      "from": "CASE-2026-0012",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0012",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0012"
+    },
+    {
+      "from": "CASE-2026-0013",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0013"
+    },
+    {
+      "from": "CASE-2026-0013",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0013",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0013"
+    },
+    {
+      "from": "CASE-2026-0014",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0014"
+    },
+    {
+      "from": "CASE-2026-0014",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0014",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0014"
+    },
+    {
+      "from": "CASE-2026-0020",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0020"
+    },
+    {
+      "from": "CASE-2026-0020",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0015"
+    },
+    {
+      "from": "CASE-2026-0020",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0020"
+    },
+    {
+      "from": "CASE-2026-0021",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0021"
+    },
+    {
+      "from": "CASE-2026-0021",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0016"
+    },
+    {
+      "from": "CASE-2026-0021",
+      "relation_type": "supports",
+      "to": "CASE-2026-0020"
+    },
+    {
+      "from": "CASE-2026-0021",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0021"
+    },
+    {
+      "from": "CASE-2026-0022",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0022"
+    },
+    {
+      "from": "CASE-2026-0022",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0011"
+    },
+    {
+      "from": "CASE-2026-0022",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0022"
+    },
+    {
+      "from": "CASE-2026-0023",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0023"
+    },
+    {
+      "from": "CASE-2026-0023",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0011"
+    },
+    {
+      "from": "CASE-2026-0023",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0023"
+    },
+    {
+      "from": "CASE-2026-0024",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0024"
+    },
+    {
+      "from": "CASE-2026-0024",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0012"
+    },
+    {
+      "from": "CASE-2026-0024",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0024"
+    },
+    {
+      "from": "CASE-2026-0030",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0030"
+    },
+    {
+      "from": "CASE-2026-0030",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0030",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0030"
+    },
+    {
+      "from": "CASE-2026-0031",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0031"
+    },
+    {
+      "from": "CASE-2026-0031",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "CASE-2026-0031",
+      "relation_type": "supports",
+      "to": "PAT-2026-0017"
+    },
+    {
+      "from": "CASE-2026-0031",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0031"
+    },
+    {
+      "from": "CASE-2026-0032",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0032"
+    },
+    {
+      "from": "CASE-2026-0032",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0011"
+    },
+    {
+      "from": "CASE-2026-0032",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0032"
+    },
+    {
+      "from": "CASE-2026-0033",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0033"
+    },
+    {
+      "from": "CASE-2026-0033",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0012"
+    },
+    {
+      "from": "CASE-2026-0033",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0033"
+    },
+    {
+      "from": "CASE-2026-0034",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0034"
+    },
+    {
+      "from": "CASE-2026-0034",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0018"
+    },
+    {
+      "from": "CASE-2026-0034",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0034"
+    },
+    {
+      "from": "CASE-2026-0040",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0040"
+    },
+    {
+      "from": "CASE-2026-0040",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0042"
+    },
+    {
+      "from": "CASE-2026-0040",
+      "relation_type": "mitigated_by",
+      "to": "RUN-2026-0012"
+    },
+    {
+      "from": "CASE-2026-0040",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0020"
+    },
+    {
+      "from": "CASE-2026-0040",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0040"
+    },
+    {
+      "from": "CASE-2026-0041",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0041"
+    },
+    {
+      "from": "CASE-2026-0041",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0020"
+    },
+    {
+      "from": "CASE-2026-0041",
+      "relation_type": "supports",
+      "to": "DEC-2026-0020"
+    },
+    {
+      "from": "CASE-2026-0041",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0041"
+    },
+    {
+      "from": "CASE-2026-0042",
+      "relation_type": "applies_to",
+      "to": "DEC-2026-0020"
+    },
+    {
+      "from": "CASE-2026-0042",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0041"
+    },
+    {
+      "from": "CASE-2026-0042",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0042"
+    },
+    {
+      "from": "CASE-2026-0042",
+      "relation_type": "supports",
+      "to": "RUN-2026-0012"
+    },
+    {
+      "from": "CASE-2026-0042",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0042"
+    },
+    {
+      "from": "CASE-2026-0043",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0043"
+    },
+    {
+      "from": "CASE-2026-0043",
+      "relation_type": "mitigated_by",
+      "to": "RUN-2026-0001"
+    },
+    {
+      "from": "CASE-2026-0043",
+      "relation_type": "observed_in",
+      "to": "PAT-2026-0003"
+    },
+    {
+      "from": "CASE-2026-0043",
+      "relation_type": "validated_by",
+      "to": "EVD-2026-0043"
+    },
+    {
+      "from": "DEC-2026-0001",
+      "relation_type": "supports",
+      "to": "DEC-2026-0020"
+    },
+    {
+      "from": "DEC-2026-0010",
+      "relation_type": "applies_to",
+      "to": "PAT-2026-0011"
+    },
+    {
+      "from": "DEC-2026-0020",
+      "relation_type": "applies_to",
+      "to": "RUN-2026-0012"
+    },
+    {
+      "from": "DEC-2026-0020",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0040"
+    },
+    {
+      "from": "DEC-2026-0020",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0042"
+    },
+    {
+      "from": "DEC-2026-0020",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0040"
+    },
+    {
+      "from": "DEC-2026-0020",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0041"
+    },
+    {
+      "from": "DEC-2026-0020",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0042"
+    },
+    {
+      "from": "PAT-2026-0001",
+      "relation_type": "applies_to",
+      "to": "CASE-2026-0001"
+    },
+    {
+      "from": "PAT-2026-0001",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0001"
+    },
+    {
+      "from": "PAT-2026-0001",
+      "relation_type": "mitigated_by",
+      "to": "RUN-2026-0001"
+    },
+    {
+      "from": "PAT-2026-0002",
+      "relation_type": "applies_to",
+      "to": "CASE-2026-0002"
+    },
+    {
+      "from": "PAT-2026-0002",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0002"
+    },
+    {
+      "from": "PAT-2026-0003",
+      "relation_type": "applies_to",
+      "to": "RUN-2026-0001"
+    },
+    {
+      "from": "PAT-2026-0003",
+      "relation_type": "supports",
+      "to": "CASE-2026-0043"
+    },
+    {
+      "from": "PAT-2026-0004",
+      "relation_type": "applies_to",
+      "to": "CASE-2026-0040"
+    },
+    {
+      "from": "PAT-2026-0005",
+      "relation_type": "applies_to",
+      "to": "CASE-2026-0004"
+    },
+    {
+      "from": "PAT-2026-0005",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0005"
+    },
+    {
+      "from": "PAT-2026-0010",
+      "relation_type": "supports",
+      "to": "RUN-2026-0010"
+    },
+    {
+      "from": "PAT-2026-0011",
+      "relation_type": "supports",
+      "to": "DEC-2026-0010"
+    },
+    {
+      "from": "PAT-2026-0011",
+      "relation_type": "supports",
+      "to": "RUN-2026-0010"
+    },
+    {
+      "from": "PAT-2026-0012",
+      "relation_type": "supports",
+      "to": "RUN-2026-0011"
+    },
+    {
+      "from": "PAT-2026-0013",
+      "relation_type": "supports",
+      "to": "RUN-2026-0010"
+    },
+    {
+      "from": "PAT-2026-0014",
+      "relation_type": "supports",
+      "to": "RUN-2026-0010"
+    },
+    {
+      "from": "PAT-2026-0015",
+      "relation_type": "supports",
+      "to": "CASE-2026-0020"
+    },
+    {
+      "from": "PAT-2026-0016",
+      "relation_type": "supports",
+      "to": "CASE-2026-0021"
+    },
+    {
+      "from": "PAT-2026-0017",
+      "relation_type": "supports",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "PAT-2026-0017",
+      "relation_type": "supports",
+      "to": "RUN-2026-0010"
+    },
+    {
+      "from": "PAT-2026-0018",
+      "relation_type": "supports",
+      "to": "CASE-2026-0034"
+    },
+    {
+      "from": "PAT-2026-0020",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0040"
+    },
+    {
+      "from": "PAT-2026-0020",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0041"
+    },
+    {
+      "from": "PAT-2026-0020",
+      "relation_type": "mitigated_by",
+      "to": "RUN-2026-0012"
+    },
+    {
+      "from": "PAT-2026-0020",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0040"
+    },
+    {
+      "from": "PAT-2026-0020",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0041"
+    },
+    {
+      "from": "PAT-2026-0020",
+      "relation_type": "supports",
+      "to": "DEC-2026-0020"
+    },
+    {
+      "from": "PAT-2026-0021",
+      "relation_type": "applies_to",
+      "to": "RUN-2026-0012"
+    },
+    {
+      "from": "PAT-2026-0021",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0040"
+    },
+    {
+      "from": "PAT-2026-0021",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0041"
+    },
+    {
+      "from": "PAT-2026-0021",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0040"
+    },
+    {
+      "from": "PAT-2026-0021",
+      "relation_type": "observed_in",
+      "to": "CASE-2026-0041"
+    },
+    {
+      "from": "RUN-2026-0001",
+      "relation_type": "applies_to",
+      "to": "DEC-2026-0020"
+    },
+    {
+      "from": "RUN-2026-0010",
+      "relation_type": "applies_to",
+      "to": "DEC-2026-0010"
+    },
+    {
+      "from": "RUN-2026-0010",
+      "relation_type": "applies_to",
+      "to": "PAT-2026-0010"
+    },
+    {
+      "from": "RUN-2026-0010",
+      "relation_type": "applies_to",
+      "to": "PAT-2026-0011"
+    },
+    {
+      "from": "RUN-2026-0010",
+      "relation_type": "applies_to",
+      "to": "PAT-2026-0013"
+    },
+    {
+      "from": "RUN-2026-0010",
+      "relation_type": "applies_to",
+      "to": "PAT-2026-0014"
+    },
+    {
+      "from": "RUN-2026-0011",
+      "relation_type": "applies_to",
+      "to": "PAT-2026-0012"
+    },
+    {
+      "from": "RUN-2026-0011",
+      "relation_type": "applies_to",
+      "to": "PAT-2026-0018"
+    },
+    {
+      "from": "RUN-2026-0012",
+      "relation_type": "applies_to",
+      "to": "CASE-2026-0040"
+    },
+    {
+      "from": "RUN-2026-0012",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0040"
+    },
+    {
+      "from": "RUN-2026-0012",
+      "relation_type": "has_evidence",
+      "to": "EVD-2026-0041"
+    }
+  ]
+}
