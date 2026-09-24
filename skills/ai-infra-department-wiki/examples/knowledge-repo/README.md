@@ -1,47 +1,32 @@
 # AI Infra 部门知识库
 
-Private repository of reviewed, desensitized AI Infra knowledge records. This is the shared half of the department wiki; the personal `llm-wiki` vault stays local.
+这里是随 Skill 一同分发的组织知识快照，不是空模板。知识正文保存在 `records/` 的 Markdown 文件中，`generated/` 是可重建的目录、图谱和看板产物。每位同事从 GitHub 安装 Skill 后，都能直接检索这份快照；后续增量通过组织知识仓评审后同步回 Skill。
 
-## Record types
+## 记录类型
 
-| Type | Directory | Use it for |
-|---|---|---|
-| case | `records/cases/<area>/` | One measured engineering finding: goal, baseline, changed variable, controlled variables, results, conclusion, applicability. |
-| evidence | `records/evidence/` | The pointer to raw data: source hash, exact locator, who verified it and when. Records reference evidence, never the other way round. |
-| decision | `records/decisions/` | A choice with alternatives and consequences. |
-| pattern | `records/patterns/` | A mechanism that repeated across cases, with its applicability boundary and counterexamples. |
-| runbook | `records/runbooks/` | The steps to repeat an operational procedure. |
-| environment | `records/environments/` | A named hardware/software configuration other records cite. |
+| 类型 | 路径 | 用途 |
+| --- | --- | --- |
+| 案例（`case`） | `records/cases/<领域>/` | 一次工程实测：目标、基线、变更、受控变量、结果、结论和适用边界。 |
+| 证据（`evidence`） | `records/evidence/` | 冻结摘录、来源哈希、精确定位与核验信息。 |
+| 决策（`decision`） | `records/decisions/` | 技术取舍、理由、反证和重新评估条件。 |
+| 实践模式（`pattern`） | `records/patterns/` | 可跨案例复用的机制、行动和不适用条件。 |
+| 运行手册（`runbook`） | `records/runbooks/` | 可执行的步骤、成功标准和失败处理。 |
+| 环境基线（`environment`） | `records/environments/` | 硬件、软件和拓扑约束。 |
 
-## Areas under `records/cases/`
+`records/cases/` 下按推理、训练、通信、部署和故障领域组织。`records/**/*.md` 都会被解析为正式记录；不要把普通说明文档放进去。
 
-`inference/`, `training/`, `communication/`, `deployment/`, `incidents/`.
+## 状态与证据边界
 
-Do not put a plain markdown file under `records/`: everything matching `records/**/*.md` is parsed as a record and will fail validation without frontmatter.
+状态依次为 `draft → proposed → observed → verified → replicated`。从既有项目导入的**案例**在部门内未复跑前保留 `observed`；逐字摘录且哈希、来源定位可核的**证据**可以单独标为 `verified`，但这不表示案例的工程结论已经复验。冻结摘录发生变化时新增证据记录，不覆盖旧证据。
 
-## Record status conventions
+## 本地 Agent 检索
 
-The lifecycle is `draft -> proposed -> observed -> verified -> replicated`. Two conventions keep the
-status honest when records are imported from an existing corpus rather than produced in this repository:
+在已安装 Skill 的目录下运行：
 
-- **A case is `observed` until somebody re-runs it here.** Quoting an archived experiment faithfully —
-  even with the numbers traced back to its source — is not a re-run. Only raise a case to `verified`
-  after its workload, framework version, accelerator, repetitions and conclusion level are known *and*
-  the finding has been reproduced or reviewed in the department.
-- **证据 can be `verified` while its case stays `observed`.** An evidence record claims only that
-  the excerpt faithfully represents the source: its `source_sha256` matches the frozen artifact and the
-  numbers quoted in the case appear in that artifact. That binding is mechanical and can be checked;
-  it says nothing about whether the engineering conclusion holds.
-
-Frozen excerpts under `artifacts/<date>-<slug>/` are immutable: when the source grows or a check is
-re-run, add a new artifact and a new evidence record rather than editing the old one.
-
-## Start here
-
-```
-node .department-tools/scripts/team-wiki.js overview .        # the corpus at a glance
-node .department-tools/scripts/team-wiki.js query . <terms>   # find a record
-node .department-tools/scripts/team-wiki.js --help
+```bash
+node scripts/team-wiki.js query examples/knowledge-repo Qwen TPOT
+node scripts/team-wiki.js show examples/knowledge-repo CASE-2026-0021
+node scripts/team-wiki.js related examples/knowledge-repo CASE-2026-0021
 ```
 
-See `CONTRIBUTING.md` for the review rules and the pull-request flow.
+看板位于 `generated/dashboard.html`；经 HTTP 提供时会读取同目录的 `catalog.json` 和 `graph-data.json`。`file://` 模式下可手动导入 catalog。新记录先在协作知识仓提交审核，验证后重建并更新此随 Skill 分发的快照。
