@@ -18,14 +18,9 @@ verified_at: ""
 
 # Title
 
-## Collection Method
-
-## Command
-
-## Relevant Output
-
-## Interpretation
-
-## Controlled Source Location
-
+## 采集方法
+## 命令
+## 相关输出
+## 解释
+## 受控来源位置
 Do not include credentials, customer identifiers, private addresses, or unrestricted raw logs.

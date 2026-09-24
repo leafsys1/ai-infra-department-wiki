@@ -17,18 +17,13 @@ relations: []
 
 # Title
 
-## Preconditions
-
+## 前置条件
 ## Read-Only Checks
 
-## Procedure
-
+## 执行步骤
 For each step include the command, expected output, and interpretation.
 
-## Success Criteria
-
-## Failure Handling
-
-## Rollback
-
-## Permission And Safety Boundary
+## 成功标准
+## 失败处理
+## 回滚
+## 权限与安全边界

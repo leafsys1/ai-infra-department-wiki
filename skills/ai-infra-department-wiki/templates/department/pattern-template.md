@@ -17,22 +17,13 @@ relations: []
 
 # Title
 
-## Trigger Signals
-
-## Root Cause
-
-## Action Pattern
-
-## Preconditions
-
-## When Not To Apply
-
-## Minimum Validation
-
-## Supporting Cases
-
-## Counterexamples
-
-## Skill Evolution Status
-
+## 触发信号
+## 根因
+## 处理模式
+## 前置条件
+## 不适用场景
+## 最小验证
+## 支持案例
+## 反例
+## Skill 演进状态
 Record candidate skill proposal IDs and gate outcomes here. A pattern is not an accepted skill until held-out validation passes.

@@ -298,7 +298,7 @@ describe("department knowledge repository", () => {
     assert.match(draft, /summary: ""/, "the template must ask for the one-sentence summary the cards read");
     assert.match(draft, /context:/);
     assert.match(draft, /validation:/);
-    assert.match(draft, /## Applicability And Risks/);
+    assert.match(draft, /## 适用范围与风险/);
   });
 
   it("capture rejects record ids that can escape the drafts directory", () => {

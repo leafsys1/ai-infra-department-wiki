@@ -28,7 +28,7 @@ status honest when records are imported from an existing corpus rather than prod
   even with the numbers traced back to its source — is not a re-run. Only raise a case to `verified`
   after its workload, framework version, accelerator, repetitions and conclusion level are known *and*
   the finding has been reproduced or reviewed in the department.
-- **Evidence can be `verified` while its case stays `observed`.** An evidence record claims only that
+- **证据 can be `verified` while its case stays `observed`.** An evidence record claims only that
   the excerpt faithfully represents the source: its `source_sha256` matches the frozen artifact and the
   numbers quoted in the case appear in that artifact. That binding is mechanical and can be checked;
   it says nothing about whether the engineering conclusion holds.

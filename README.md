@@ -2,7 +2,7 @@
 
 面向 AI Infra 团队的**验证、交付和知识沉淀**协作工具。把模型适配、算子迁移、服务化调优、故障定位、NPU 复现和客户交付中的可复用结论，沉淀为有证据、有适用边界、可检索、可追溯的组织知识。
 
-> 本仓只分发 Skill、模板、Schema 和固定工具链；真实部门知识放在独立知识仓，通过 Git 分支和 PR 协作。
+> 本仓同时分发 Skill、模板、Schema、固定工具链和一份完整的组织知识快照；知识快照位于 `skills/ai-infra-department-wiki/examples/knowledge-repo/`，任何同事从 GitHub 安装后都能读取。独立知识仓只是后续协作更新用的工作副本。
 
 [![license](https://img.shields.io/badge/license-MIT-1f883d?style=flat-square)](LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D22-1f883d?style=flat-square)](https://nodejs.org/)
@@ -17,7 +17,7 @@ AI Infra 团队的有效经验通常分散在测试日志、模型包、交付�
 - **客户交付**：交付物清单、依赖、启动方式、验收标准、复现状态和适用环境
 - **调优经验**：基线、改动、配对结果、性能收益、分辨力和回滚条件
 - **问题复盘**：症状、最小复现、根因、修复、回归验证和剩余风险
-- **知识入库**：Case、Evidence、Decision、Pattern、Runbook、Environment
+- **知识入库**：案例、证据、决策、实践模式、运行手册、环境基线
 - `inference-delivery-qa`：针对推理部署、算子调优、benchmark 数据和客户交付包的证据质检 Skill
 
 ## 安装
@@ -38,14 +38,14 @@ hermes skills install https://raw.githubusercontent.com/leafsys1/ai-infra-depart
 
 | 类型 | 记录什么 | 必须回答 |
 | --- | --- | --- |
-| **Case** | 一个适配、调优、故障或交付任务 | 做了什么，结果是什么，适用边界是什么 |
-| **Evidence** | 压测、日志摘要、NPU 运行结果、验收证据 | 谁在什么环境用什么命令验证 |
-| **Decision** | 选型、技术路线和取舍 | 为什么选，放弃了什么，何时重新评估 |
-| **Pattern** | 可跨项目复用的做法 | 哪些条件下有效，哪些情况不能套用 |
-| **Runbook** | 可执行的操作步骤 | 同事能否按步骤复现或回滚 |
-| **Environment** | CANN、驱动、镜像、硬件和依赖基线 | 这条结论依赖什么环境 |
+| **案例** | 一个适配、调优、故障或交付任务 | 做了什么，结果是什么，适用边界是什么 |
+| **证据** | 压测、日志摘要、NPU 运行结果、验收证据 | 谁在什么环境用什么命令验证 |
+| **决策** | 选型、技术路线和取舍 | 为什么选，放弃了什么，何时重新评估 |
+| **实践模式** | 可跨项目复用的做法 | 哪些条件下有效，哪些情况不能套用 |
+| **运行手册** | 可执行的操作步骤 | 同事能否按步骤复现或回滚 |
+| **环境基线** | CANN、驱动、镜像、硬件和依赖基线 | 这条结论依赖什么环境 |
 
-一条重要结论不应只有一份 Markdown。Case 应通过关系引用 Evidence；客户交付应同时记录交付物、运行方式和验收证据；Pattern 只有通过 held-out Skill gate 才能升级为可复用 Skill。
+一条重要结论不应只有一份 Markdown。案例 应通过关系引用 证据；客户交付应同时记录交付物、运行方式和验收证据；实践模式 只有通过 held-out Skill gate 才能升级为可复用 Skill。
 
 ## 看板预览
 
@@ -101,15 +101,15 @@ python3 skills/inference-delivery-qa/scripts/qa.py init --out <run>/input
 python3 skills/inference-delivery-qa/scripts/qa.py audit --root <run>/evidence --input <run>/input/audit-input.json --out <run>/mechanical
 ```
 
-质检结果按 `references/inference-delivery-qa-bridge.md` 入库：质检包是 Evidence 集合，Case 保存结论和适用边界；`HOLD`、`BLOCKED`、`PENDING_INDEPENDENT_REVIEW` 不得写成 `verified`，客户放行必须由独立授权人员批准确切冻结包。
+质检结果按 `references/inference-delivery-qa-bridge.md` 入库：质检包是 证据 集合，案例 保存结论和适用边界；`HOLD`、`BLOCKED`、`PENDING_INDEPENDENT_REVIEW` 不得写成 `verified`，客户放行必须由独立授权人员批准确切冻结包。
 
 
 看板随 Skill 一起分发（`skills/ai-infra-department-wiki/assets/dashboard/index.html`），`build` 会把它复制到知识仓的 `generated/dashboard.html`，与它读取的 `catalog.json` 同目录。它是单文件、无构建、无服务器的 GitHub 风格阅读界面：
 
 - **概览**：知识总量、已验证比例、贡献者、关系数、活动热力图
-- **知识目录树**：按 Case、Evidence、Decision、Pattern、Runbook、Environment 浏览
+- **知识目录树**：按 案例、证据、决策、实践模式、运行手册、环境基线 浏览
 - **知识阅读**：记录标题、Markdown 正文、状态、负责人、模型、加速器、标签、更新时间
-- **引用和来源**：关系图入口、上下游引用、Evidence 来源路径
+- **引用和来源**：关系图入口、上下游引用、证据 来源路径
 - **人机共用**：人用看板搜索阅读，Agent 用 `query/show/related/overview` 和 `generated/catalog.json`
 - **本地优先**：catalog 只在浏览器本地读取，不上传
 

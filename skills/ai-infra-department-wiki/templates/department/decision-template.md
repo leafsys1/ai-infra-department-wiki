@@ -19,14 +19,9 @@ superseded_by: []
 
 # Title
 
-## Decision
-
-## Rationale
-
-## Supporting Evidence
-
-## Counter Evidence
-
-## Applicability
-
-## Revisit Conditions
+## 决策
+## 理由
+## 支持证据
+## 反证
+## 适用范围
+## 重新评估条件

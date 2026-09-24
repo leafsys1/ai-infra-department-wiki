@@ -14,14 +14,9 @@ updated: YYYY-MM-DD
 
 # Title
 
-## Hardware
-
-## Network And Topology
-
-## Operating System And Driver
-
-## Runtime And Framework Versions
-
-## Model And Weight Format
-
-## Known Constraints
+## 硬件
+## 网络与拓扑
+## 操作系统与驱动
+## 运行时与框架版本
+## 模型与权重格式
+## 已知限制

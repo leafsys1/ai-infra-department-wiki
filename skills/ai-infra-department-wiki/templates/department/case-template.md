@@ -39,18 +39,11 @@ superseded_by: []
 
 # Title
 
-## Goal
-
-## Baseline
-
-## Changed Variable
-
-## Controlled And Uncontrolled Variables
-
-## Procedure
-
-## Results
-
-## Conclusion
-
-## Applicability And Risks
+## 目标
+## 基线
+## 变更变量
+## 受控与非受控变量
+## 执行步骤
+## 结果
+## 结论
+## 适用范围与风险
