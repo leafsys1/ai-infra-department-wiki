@@ -27,6 +27,9 @@
     "visibility": {
       "enum": ["shareable", "internal", "restricted", "local-only"]
     },
+    "origin": {
+      "enum": ["external_import", "skill_reflection", "mixed"]
+    },
     "owners": {
       "type": "array",
       "minItems": 1,

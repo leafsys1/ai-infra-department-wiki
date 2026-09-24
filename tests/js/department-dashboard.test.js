@@ -122,6 +122,7 @@ const RECORD = (id, title, sources) =>
     `title: "${title}"`,
     "status: proposed",
     "visibility: internal",
+    "origin: external_import",
     "owners: [probe]",
     "reviewers: []",
     "created: 2026-09-22",

@@ -30,6 +30,7 @@ const FIELDS = Object.freeze([
   "precision",
   "evidence",
   "sources",
+  "origin",
   "targets",
 ]);
 
@@ -49,6 +50,7 @@ const WEIGHTS = Object.freeze({
   reviewers: 5,
   evidence: 5,
   sources: 4,
+  origin: 8,
   targets: 5,
   type: 4,
   status: 6,
@@ -135,6 +137,7 @@ function recordFields(record) {
     type: textOf(data.type),
     status: textOf(data.status),
     visibility: textOf(data.visibility),
+    origin: textOf(data.origin || "external_import"),
     title: textOf(data.title),
     owners: asArray(data.owners).join(" "),
     reviewers: asArray(data.reviewers).join(" "),
@@ -177,6 +180,7 @@ function catalogEntry(record) {
     title: data.title || "",
     status: data.status || null,
     visibility: data.visibility || null,
+    origin: fields.origin || "external_import",
     owners: asArray(data.owners).sort(),
     reviewers: asArray(data.reviewers).sort(),
     areas: asArray(data.areas).sort(),

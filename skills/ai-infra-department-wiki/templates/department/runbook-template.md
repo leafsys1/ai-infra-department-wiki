@@ -6,6 +6,7 @@ title: ""
 summary: ""
 status: draft
 visibility: internal
+origin: external_import
 owners: []
 reviewers: []
 created: YYYY-MM-DD
